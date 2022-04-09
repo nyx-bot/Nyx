@@ -1,0 +1,10 @@
+{
+    "systemModule": true,
+    "aliases": [
+        "system",
+        "bot",
+        "botconfig"
+    ],
+    "description": "Basic system commands that helps you with all things Nyx-related!",
+    "emoji": "pat"
+}

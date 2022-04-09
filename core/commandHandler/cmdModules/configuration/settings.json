@@ -1,0 +1,10 @@
+{
+    "systemModule": true,
+    "aliases": [
+        "serverconfig",
+        "settings",
+        "serversettings"
+    ],
+    "description": "Modify the server's configuration for Nyx!",
+    "emoji": "mechanic"
+}

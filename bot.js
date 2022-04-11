@@ -8,7 +8,8 @@ global.ctx = {
             MessageActionRow: require('discord.js').MessageActionRow,
             MessageButton: require('discord.js').MessageButton,
         },
-        jimp: require('jimp')
+        jimp: require('jimp'),
+        Discord: require('discord.js')
     },
     utils: {
         colors: require('./util/nyxColors'),
@@ -48,7 +49,7 @@ const createDiscordClient = async () => new Promise(async res => {
             interactionCache[interaction.id] = true;
 
             const isCommand = interaction.isCommand() ? `COMMAND` : null;
-            const isButton = interaction.isButton() ? `BUTTON` : null;
+            const isButton = interaction.isButton() || interaction.isSelectMenu() ? `BUTTON` : null;
 
             let log = `[${(isCommand ? isCommand + ` ` : ``) + (isButton ? isButton + ` ` : ``) + interaction.type.toUpperCase()} INTERACTION]`;
             if(interaction.guild) log = log + `\n| Guild ID: ${interaction.guild.id || interaction.guildId}`;

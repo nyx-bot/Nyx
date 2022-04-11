@@ -6,7 +6,7 @@ moduleFind = (module, interaction, func) => {
     const embed = new ctx.libs.builder.Embed()
     embed.setTitle(`${mod.emoji} **${mod.friendlyName}** [${Object.keys(mod.commands).length} command${Object.keys(mod.commands).length === 1 ? `` : `s`}]`)
     
-    embed.setDescription(Object.values(global.ctx.modules).map(m => m.friendlyName).join(`  `).replace(mod.friendlyName, `**${mod.friendlyName}**`) + `\n${mod.description}\n`)
+    embed.setDescription(`\`` + Object.values(global.ctx.modules).map(m => m.friendlyName).join(`\`  \``).replace(`\`${mod.friendlyName}\``, `__\`${mod.friendlyName}\`__`) + `\`` + `\n${mod.description}\n`)
     
     if(mod.systemModule) embed.setDescription(embed.description + `\n:tools: System Module`)
     
@@ -28,40 +28,30 @@ moduleFind = (module, interaction, func) => {
         text: `Module  ${pos+1} / ${moduleArray.length}`
     });
 
-    const buttons = [];
-
-    let next = moduleArray[pos+1] || moduleArray[0];
-    let prev = moduleArray[pos-1] || moduleArray[moduleArray.length-1];
-
-    buttons.push(
-        new ctx.libs.builder.MessageButton()
-        .setCustomId(`previous`)
-        .setLabel(`◀ ` + prev[0].toUpperCase() + prev.slice(1))
-        .setStyle(`SECONDARY`)
-    )
-
-    buttons.push(
-        new ctx.libs.builder.MessageButton()
-        .setCustomId(`next`)
-        .setLabel(next[0].toUpperCase() + next.slice(1) + ` ▶`)
-        .setStyle(`PRIMARY`)
-    )
-
     return interaction[func]({
         content: `Help for module **${mod.friendlyName}**`,
         embeds: [embed],
-        components: [new ctx.libs.builder.MessageActionRow().addComponents(...buttons)],
+        components: [
+            new ctx.libs.builder.MessageActionRow().addComponents(
+                new ctx.libs.Discord.MessageSelectMenu()
+                .setCustomId(`selector`)
+                .addOptions(...moduleArray.map(m => {
+                    console.log(m, ctx.modules[m].description)
+                    return {
+                        label: ctx.modules[m].friendlyName,
+                        value: m.toLowerCase(),
+                        description: `${ctx.modules[m].description}`.substring(0, 99),
+                        emoji: `${ctx.modules[m].emoji}`,
+                        default: m.toLowerCase() == module.toLowerCase() ? true : false
+                    }
+                }))
+            )
+        ],
         ephemeral: true,
     })
 }
 
-const buttonFunc = async interaction => {
-    const buttonClicked = interaction.component.label.toLowerCase()
-
-    const newModule = ((/^[A-Z0-9]/i).test(buttonClicked) ? buttonClicked.split(` `)[0] : buttonClicked.split(` `)[1])
-
-    moduleFind(newModule.toLowerCase(), interaction, `update`)
-}
+const buttonFunc = interaction => moduleFind(interaction.values[0].toLowerCase(), interaction, `update`)
 
 const func = async (interaction) => {
     const module = interaction.options.getString(`module`, false)

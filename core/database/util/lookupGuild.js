@@ -2,7 +2,6 @@ module.exports = async function (model, guildID, raw) {
     if(raw === undefined || typeof raw !== `boolean`) {
          raw = false;
     };
-    console.log(ctx.seq.models, [`server` + model[0].toUpperCase() + model.slice(1)])
     let fallback = ctx.seq.models[`server` + model[0].toUpperCase() + model.slice(1)].build({id: guildID});
     const g = await ctx.seq.models[`server` + model[0].toUpperCase() + model.slice(1)].findOne({where: {id: guildID}});
     if(g) {

@@ -38,7 +38,7 @@ const func = interaction => {
                     }; buttons.push(button)
                 }
 
-                for(s of sizes.slice(-10)) if(typeof s === `number`) append(
+                for(s of sizes.filter(s => s % 16 === 0).slice(-4)) if(typeof s === `number`) append(
                     new ctx.libs.builder.MessageButton()
                     .setURL(member.user.avatarURL({ size: s, format: `png`, dynamic: true }))
                     .setLabel(`${s}px`)

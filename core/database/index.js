@@ -76,5 +76,16 @@ module.exports = () => new Promise(async res => {
         };
         fs.writeFileSync(modelsCacheDir, JSON.stringify(modelsCache))
         return finish();
-   });
+    });
+
+    ctx.seq.util = {};
+
+    for (f of fs.readdirSync(`./core/database/util`)) {
+        console.log(`Adding DB util "${f}"`)
+        try {
+            ctx.seq.util[f.split(`.`).slice(0, -1).join(`.`)] = require(`./util/${f}`)
+        } catch(e) {
+            console.error(`Failed to add "${f}"`, e)
+        }
+    }
 })

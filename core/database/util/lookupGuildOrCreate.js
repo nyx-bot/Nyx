@@ -22,7 +22,5 @@ module.exports = async function (model, guildID, raw) {
               res(rawB && r.dataValues ? r.dataValues : r)
          }).catch(rej)
     }); 
-    ctx.bot.guilds.get(guildID).guildSettingRaw = guild;
-    ctx.bot.guilds.get(guildID).guildSetting = guild.dataValues;
     return guild;
 };

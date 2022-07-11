@@ -6,7 +6,16 @@ const { Routes } = require('discord-api-types/v9'), rest = new (require('@discor
 
 module.exports = () => new Promise(async res => {
     console.log(`Fetching existing commands library from Discord API...`);
-    const existingCommands = await rest.get(Routes.applicationCommands(botID));
+    let existingCommands;
+    try {
+        existingCommands = await rest.get(Routes.applicationCommands(botID));
+    } catch(e) {
+        if(`${e}`.toLowerCase().includes(`unauthorized`)) {
+            console.error(`The token provided is invalid! (Discord returned an error code of 401, meaning "unauthorized")`)
+        } else console.error(e);
+
+        process.exit(1)
+    }
     console.log(`Discord reported ${existingCommands.length} commands!`)
 
     const modules = fs.readdirSync(`./core/commandHandler/cmdModules`);
@@ -92,6 +101,8 @@ module.exports = () => new Promise(async res => {
         console.log(`\n -- Successfully updated command configuration! (${cmds.length}/${commandPayload.length}) -- \n`);
         res(cmds);
     }).catch(e => {
+        // for some reason, rest api decides to exit the process with no error message -- this is literally impossible to mitigate.
+
         console.error(`Failed to update command configuration; ${e}`); res()
     })
 })

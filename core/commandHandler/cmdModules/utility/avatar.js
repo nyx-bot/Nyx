@@ -4,14 +4,14 @@ const func = interaction => {
     if(!member.user) {
         return interaction.reply({ ephemeral: true, content: ctx.errMsg(interaction, `I wasn't able to get the details of that member!`, `Invalid user object`, interaction, member) })
     } else {
-        const embed = new ctx.libs.builder.Embed()
+        const embed = new ctx.libs.builder.EmbedBuilder()
         .setTitle(`${ctx.utils.escape(member.user.username)}#${ctx.utils.escape(member.user.discriminator)}`)
         .setImage(member.user.avatarURL({ size: 600, dynamic: true }))
         .setColor(ctx.utils.colors(`random`));
         
         interaction.reply({
             content: `Avatar of **${ctx.utils.escape(member.user.username)}**`,
-            embeds: [embed],
+            embeds: [embed.toJSON()],
         }).then(async r => {
             ctx.libs.jimp.read(member.user.avatarURL({
                 dynamic: false, 
@@ -68,7 +68,7 @@ const func = interaction => {
 
                 interaction.editReply({
                     content: `Avatar of **${ctx.utils.escape(member.user.username)}**`,
-                    embeds: [embed],
+                    embeds: [embed.toJSON()],
                     components
                 })
             })

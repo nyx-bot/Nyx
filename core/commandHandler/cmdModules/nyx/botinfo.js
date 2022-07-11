@@ -1,46 +1,43 @@
 const func = async (interaction) => {
-    const embed = new ctx.libs.builder.Embed();
+    const embed = new ctx.libs.builder.EmbedBuilder();
     embed.setTitle(`**Nyx's Stats**`)
     embed.setDescription(`**${ctx.utils.escape(interaction.guild.name)}** is on shard **#${interaction.guild.shard.id}**`);
     embed.setColor(ctx.utils.colors('random'))
 
     const stats = await require('../../../../util/stats').fetch()
 
-    embed.addField({
-        name: `${ctx.emojis.nyxWhite} Servers`,
-        value: `${stats.serversOnThisShard} on this shard\n${stats.totalServers} across all shards`,
-        inline: true,
-    })
-    
-    embed.addField({
-        name: `${ctx.emojis.nyxWhite} Users`,
-        value: `${stats.membersOnThisShard} on this shard\n${stats.totalMembers} across all shards`,
-        inline: true,
-    })
-    
-    embed.addField({
-        name: `:gear: Internal Events`,
-        value: `${stats.eventsPerSecondOnThisShard}/s, ${stats.eventsPerHourOnThisShard}/h on this shard\n${stats.totalEventsPerSecond}/s, ${stats.totalEventsPerHour}/h across all shards`,
-        inline: true,
-    })
-    
-    embed.addField({
-        name: `:musical_note: Music playing in`,
-        value: `0 servers`,
-        inline: true,
-    })
-    
-    embed.addField({
-        name: `${ctx.emojis.nyxWhite} Version`,
-        value: `Nyx v${require('../../../../package.json').version}`,
-        inline: true,
-    })
-    
-    embed.addField({
-        name: `${ctx.emojis.icons.nodejs} Discord.js version`,
-        value: `v${require('../../../../package.json').dependencies['discord.js'].replace('^', '')}`,
-        inline: true,
-    })
+    embed.addFields([
+        {
+            name: `${ctx.emojis.nyxWhite} Servers`,
+            value: `${stats.serversOnThisShard} on this shard\n${stats.totalServers} across all shards`,
+            inline: true,
+        },
+        {
+            name: `${ctx.emojis.nyxWhite} Users`,
+            value: `${stats.membersOnThisShard} on this shard\n${stats.totalMembers} across all shards`,
+            inline: true,
+        },
+        {
+            name: `:gear: Internal Events`,
+            value: `${stats.eventsPerSecondOnThisShard}/s, ${stats.eventsPerHourOnThisShard}/h on this shard\n${stats.totalEventsPerSecond}/s, ${stats.totalEventsPerHour}/h across all shards`,
+            inline: true,
+        },
+        {
+            name: `:musical_note: Music playing in`,
+            value: `0 servers`,
+            inline: true,
+        },
+        {
+            name: `${ctx.emojis.nyxWhite} Version`,
+            value: `Nyx v${require('../../../../package.json').version}`,
+            inline: true,
+        },
+        {
+            name: `${ctx.emojis.icons.nodejs} Discord.js version`,
+            value: `v${require('../../../../package.json').dependencies['discord.js'].replace('^', '')}`,
+            inline: true,
+        }
+    ]);
 
     const buttons = [];
 
@@ -69,7 +66,7 @@ const func = async (interaction) => {
     )
     
     return interaction.reply({
-        embeds: [embed],
+        embeds: [embed.toJSON()],
         components: [new ctx.libs.builder.MessageActionRow().addComponents(...buttons)]
     })
 }

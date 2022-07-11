@@ -1,7 +1,7 @@
 const func = interaction => {
     const member = interaction.options.getMember(`user`, false) || interaction.member;
 
-    const embed = new ctx.libs.builder.Embed()
+    const embed = new ctx.libs.builder.EmbedBuilder()
     .setTitle(`${ctx.utils.escape(member.user.username)}#${ctx.utils.escape(member.user.discriminator)}`)
     .setThumbnail(member.user.avatarURL({ size: 2048, dynamic: true }));
 
@@ -24,11 +24,13 @@ const func = interaction => {
         if(key.startsWith(`mo`)) k = `mo`;
         if(key.startsWith(`min`)) k = `min`;
         if(unit !== 0) accountAgeStr.push(`${unit}${k}`)
-    }; embed.addField({
-        name: `Registered:`,
-        value: `${accountAgeStr.length !== 1 ? accountAgeStr.slice(0, 3).slice(0, -1).join(`, `) + `, and ` + accountAgeStr.slice(0, 3).slice(-1) : accountAgeStr[0]} ago.`,
-        inline: true
-    });
+    }; embed.addFields([
+        {
+            name: `Registered:`,
+            value: `${accountAgeStr.length !== 1 ? accountAgeStr.slice(0, 3).slice(0, -1).join(`, `) + `, and ` + accountAgeStr.slice(0, 3).slice(-1) : accountAgeStr[0]} ago.`,
+            inline: true
+        }
+    ]);
 
     const joinedServerAge = ctx.utils.time(Date.now() - Number(member.joinedTimestamp)), joinedServerAgeStr = [];
     for(key of Object.keys(joinedServerAge.units)) if(key !== `ms` && key !== `infinite`) {
@@ -37,20 +39,24 @@ const func = interaction => {
         if(key.startsWith(`mo`)) k = `mo`;
         if(key.startsWith(`min`)) k = `min`;
         if(unit !== 0) joinedServerAgeStr.push(`${unit}${k}`)
-    }; embed.addField({
-        name: `Joined Server:`,
-        value: `${joinedServerAgeStr.length !== 1 ? joinedServerAgeStr.slice(0, 3).slice(0, -1).join(`, `) + `, and ` + joinedServerAgeStr.slice(0, 3).slice(-1) : joinedServerAge[0]} ago.`,
-        inline: true
-    });
+    }; embed.addFields([
+        {
+            name: `Joined Server:`,
+            value: `${joinedServerAgeStr.length !== 1 ? joinedServerAgeStr.slice(0, 3).slice(0, -1).join(`, `) + `, and ` + joinedServerAgeStr.slice(0, 3).slice(-1) : joinedServerAge[0]} ago.`,
+            inline: true
+        }
+    ]);
 
-    embed.addField({
-        name: `${member.roles.cache.size} Role${member.roles.cache.size === 1 ? `` : `s`}:`,
-        value: `${member.roles.cache.map(r => r.toString()).join(` `)}`
-    });
+    embed.addFields([
+        {
+            name: `${member.roles.cache.size} Role${member.roles.cache.size === 1 ? `` : `s`}:`,
+            value: `${member.roles.cache.map(r => r.toString()).join(` `)}`
+        }
+    ]);
 
     interaction.reply({
         content: `User Info of **${ctx.utils.escape(member.user.username)}**`,
-        embeds: [embed]
+        embeds: [embed.toJSON()]
     })
 }
 

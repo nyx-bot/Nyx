@@ -6,19 +6,22 @@ const func = async (interaction) => {
     interaction.reply({ 
         content: "Pinging...",
         embeds: [
-            new ctx.libs.builder.Embed()
+            new ctx.libs.builder.EmbedBuilder()
             .setTitle(`**Ping**`)
-            .addField({
-                name: `**API Latency**`,
-                value: `\`\`\`${interaction.guild.shard.ping}ms\`\`\``,
-                inline: true
-            })
-            .addField({
-                name: `**Time to Respond**`,
-                value: `\`\`\`--ms\`\`\``,
-                inline: true,
-            })
+            .addFields([
+                {
+                    name: `**API Latency**`,
+                    value: `\`\`\`${interaction.guild.shard.ping || `--`}ms\`\`\``,
+                    inline: true
+                },
+                {
+                    name: `**Time to Respond**`,
+                    value: `\`\`\`--ms\`\`\``,
+                    inline: true,
+                }
+            ])
             .setColor(color)
+            .toJSON()
         ]
     }).then(async () => {
         let timeprocessed = Date.now() - start
@@ -28,19 +31,22 @@ const func = async (interaction) => {
         interaction.editReply({ 
             content: `Pong! ${timeprocessed}ms processing time`, 
             embeds: [
-                new ctx.libs.builder.Embed()
+                new ctx.libs.builder.EmbedBuilder()
                 .setTitle(`**Ping**`)
-                .addField({
-                    name: `**API Latency**`,
-                    value: `\`\`\`` + interaction.guild.shard.ping + `ms\`\`\``,
-                    inline: true,
-                })
-                .addField({
-                    name: `**Time to Respond**`,
-                    value: `\`\`\`${timeforrec}ms\`\`\``,
-                    inline: true,
-                })
+                .addFields([
+                    {
+                        name: `**API Latency**`,
+                        value: `\`\`\`` + interaction.guild.shard.ping + `ms\`\`\``,
+                        inline: true,
+                    },
+                    {
+                        name: `**Time to Respond**`,
+                        value: `\`\`\`${timeforrec}ms\`\`\``,
+                        inline: true,
+                    }
+                ])
                 .setColor(color)
+                .toJSON()
             ] 
         })
     })

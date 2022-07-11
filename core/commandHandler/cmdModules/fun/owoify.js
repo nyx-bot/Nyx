@@ -23,9 +23,10 @@ const func = (interaction) => {
                     ephemeral: true,
                     content: `${ctx.emojis.pass} Here you go!`,
                     embeds: [
-                        new ctx.libs.builder.Embed()
+                        new ctx.libs.builder.EmbedBuilder()
                             .setDescription(content)
                             .setColor(ctx.utils.colors(`random`))
+                            .toJSON()
                     ]
                 })
             }

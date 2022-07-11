@@ -3,7 +3,7 @@ moduleFind = (module, interaction, func) => {
     const moduleArray = Object.keys(global.ctx.modules)
     const pos = moduleArray.indexOf(module.toLowerCase())
     
-    const embed = new ctx.libs.builder.Embed()
+    const embed = new ctx.libs.builder.EmbedBuilder()
     embed.setTitle(`${mod.emoji} **${mod.friendlyName}** [${Object.keys(mod.commands).length} command${Object.keys(mod.commands).length === 1 ? `` : `s`}]`)
     
     embed.setDescription(`\`` + Object.values(global.ctx.modules).map(m => m.friendlyName).join(`\`  \``).replace(`\`${mod.friendlyName}\``, `__\`${mod.friendlyName}\`__`) + `\`` + `\n${mod.description}\n`)
@@ -17,11 +17,13 @@ moduleFind = (module, interaction, func) => {
 
         // interaction types: https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type
 
-        embed.addField({
-            name: `**${ctx.emojis.command.slash}${cmd.name}**`,
-            value: cmd.description,
-            inline: true
-        });
+        embed.addFields([
+            {
+                name: `**${ctx.emojis.command.slash}${cmd.name}**`,
+                value: cmd.description,
+                inline: true
+            }
+        ]);
     };
 
     embed.setFooter({
@@ -30,7 +32,7 @@ moduleFind = (module, interaction, func) => {
 
     return interaction[func]({
         content: `Help for module **${mod.friendlyName}**`,
-        embeds: [embed],
+        embeds: [embed.toJSON()],
         components: [
             new ctx.libs.builder.MessageActionRow().addComponents(
                 new ctx.libs.Discord.MessageSelectMenu()
@@ -73,13 +75,16 @@ const func = async (interaction) => {
         interaction.reply({
             ephemeral: true,
             embeds: [
-                new ctx.libs.builder.Embed()
+                new ctx.libs.builder.EmbedBuilder()
                 .setTitle(`Help`)
-                .addField({
-                    name: `**Resources**`,
-                    value: resources.map(r => `${r[0]} [**${r[1]}**](${r[2]})`).join(`\n`)
-                })
+                .addFields([
+                    {
+                        name: `**Resources**`,
+                        value: resources.map(r => `${r[0]} [**${r[1]}**](${r[2]})`).join(`\n`)
+                    }
+                ])
                 .setColor(ctx.utils.colors(`random`))
+                .toJSON()
             ]
         })
     }
@@ -92,11 +97,12 @@ module.exports = {
     .setDescription(`See help for Nyx, how to use specific commands, or a rundown on an individual module!`)
     .addStringOption(s => {
         s.setName(`module`)
-        s.setDescription(`View the status, a list of commands, or an individual command's help in a certain module`)
+        s.setDescription(`View the status, a list of commands, or an individual command's help in a certain module`);
 
-        for (m of require('fs').readdirSync(`./core/commandHandler/cmdModules`)) {
-            s.addChoice(m[0].toUpperCase() + m.slice(1), m)
-        }
+        s.addChoices(...require('fs').readdirSync(`./core/commandHandler/cmdModules`).map(m => {return {
+            name: m[0].toUpperCase() + m.slice(1),
+            value: m
+        }}));
 
         s.setRequired(false);
 

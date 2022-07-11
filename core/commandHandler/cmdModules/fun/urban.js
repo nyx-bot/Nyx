@@ -15,7 +15,7 @@ const findResponses = (interaction, query, n, deferReplyFunc, defer, func) => ne
             var trimmedB = (`${term.example}`).substring(0, length);var example;if(trimmedB !== term.example) {trimmedfafa = true; example = `${trimmedB}`} else {example = trimmed}
             if(trimmedfafa) {example = `${example}... <bg>Continue Reading<end>(${term.permalink})`}
             
-            let embed = new ctx.libs.builder.Embed()
+            let embed = new ctx.libs.builder.EmbedBuilder()
             .setTitle(`Urban Dictionary: **${term.word}** [${n+1}/${r.body.list.length}]`)
             .setColor(ctx.utils.colors('random'))
             .setDescription(`\n> ${(definition).replace(/\[/g, '**').replace(/\]/g, '**').replace(/<br>/g, '\n').replace(/\n/g, '> ').replace(/<bg>/g, '[').replace(/<end>/g, ']')}\n\n**Example(s)**\n${(trimmedB).replace(/\[/g, '**').replace(/\]/g, '**')}\n\n[__**View on Urban Dictionary**__](${term.permalink})`)
@@ -41,7 +41,7 @@ const findResponses = (interaction, query, n, deferReplyFunc, defer, func) => ne
         
             return res(interaction[funcProp]({
                 content: `${ctx.emojis.nyx.happy} I found ${r.body.list.length} result${r.body.list.length.length === 1 ? `` : `s`} for **${ctx.utils.escape(query)}**`,
-                embeds: [embed],
+                embeds: [embed.toJSON()],
                 components: [new ctx.libs.builder.MessageActionRow().addComponents(...buttons)],
             }))
         } else return res(interaction.editReply(`${ctx.emojis.fail} There is no definition of **${ctx.utils.escape(decodeURI(termA).replace(/%20/g, ' '))}**!`))

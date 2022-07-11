@@ -9,14 +9,14 @@ const func = interaction => {
                 content: `**${ctx.utils.escape(member.user.username)}** does not have a banner!`
             })
         } else {
-            const embed = new ctx.libs.builder.Embed()
+            const embed = new ctx.libs.builder.EmbedBuilder()
             .setTitle(`${ctx.utils.escape(member.user.username)}#${ctx.utils.escape(member.user.discriminator)}`)
             .setImage(member.user.bannerURL({ size: 600, dynamic: true }))
             .setColor(ctx.utils.colors(`random`));
             
             interaction.reply({
                 content: `Banner of **${ctx.utils.escape(member.user.username)}**`,
-                embeds: [embed],
+                embeds: [embed.toJSON()],
             }).then(async r => {
                 ctx.libs.jimp.read(member.user.bannerURL({
                     dynamic: false, 

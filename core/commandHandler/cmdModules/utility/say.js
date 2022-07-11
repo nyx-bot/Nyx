@@ -24,7 +24,7 @@ const func = interaction => {
     }
     
     if(interaction.options.getString(`title`, false) && interaction.options.getString(`title`, false).length <= 256) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setTitle(`${interaction.options.getString(`title`, false)}`);
             embedCharacterCount = embedCharacterCount + interaction.options.getString(`title`, false).length
@@ -37,7 +37,7 @@ const func = interaction => {
     } else if(interaction.options.getString(`title`, false)) return interaction.reply({ ephemeral: true, content: `${ctx.emojis.fail} Titles have a limit of **256** characters!` })
     
     if(interaction.options.getString(`description`, false) && interaction.options.getString(`description`, false).length <= 4096) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setDescription(`${interaction.options.getString(`description`, false)}`)
             embedCharacterCount = embedCharacterCount + interaction.options.getString(`description`, false).length
@@ -50,7 +50,7 @@ const func = interaction => {
     } else if(interaction.options.getString(`description`, false)) return interaction.reply({ ephemeral: true, content: `${ctx.emojis.fail} Descriptions have a limit of **4096** characters!` })
     
     if(interaction.options.getString(`color`, false) && (interaction.options.getString(`color`, false).length === 6 || (interaction.options.getString(`color`, false).length === 7 && interaction.options.getString(`color`, false).startsWith(`#`)))) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         console.log(interaction.options.getString(`color`, false))
         try {
             obj.embeds[0].setColor(ctx.utils.colors(interaction.options.getString(`color`, false)))
@@ -63,7 +63,7 @@ const func = interaction => {
     } else if(interaction.options.getString(`color`, false)) return interaction.reply({ ephemeral: true, content: `${ctx.emojis.fail} Invalid Color! (HEX colors start with a \`#\` symbol, followed by 6 individual characters)` })
     
     if(interaction.options.getUser(`author`, false)) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setAuthor({ 
                 name: `${interaction.options.getUser(`author`, false).username}#${interaction.options.getUser(`author`, false).discriminator}`,
@@ -78,7 +78,7 @@ const func = interaction => {
     }
     
     if(interaction.options.getString(`thumbnail`, false)) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setThumbnail(`${interaction.options.getString(`thumbnail`, false)}`)
         } catch(e) { 
@@ -91,7 +91,7 @@ const func = interaction => {
     }
     
     if(interaction.options.getString(`image`, false)) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setImage(`${interaction.options.getString(`image`, false)}`)
         } catch(e) { 
@@ -103,7 +103,7 @@ const func = interaction => {
     }
 
     if(interaction.options.getString(`footer`, false)) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setFooter({ text: interaction.options.getString(`footer`, false) })
             embedCharacterCount = embedCharacterCount + interaction.options.getString(`footer`, false).length
@@ -116,7 +116,7 @@ const func = interaction => {
     }
 
     if(interaction.options.getString(`url`, false)) {
-        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.Embed() }
+        if(!obj.embeds[0]) { obj.embeds[0] = new ctx.libs.builder.EmbedBuilder() }
         try {
             obj.embeds[0].setURL(interaction.options.getString(`url`, false))
         } catch(e) { 
@@ -125,7 +125,9 @@ const func = interaction => {
                 ephemeral: true
             }) 
         }
-    }
+    };
+
+    if(obj.embeds[0]) obj.embeds[0] = obj.embeds[0].toJSON()
 
     interaction.channel.send(obj).then(() => {
         interaction.reply({

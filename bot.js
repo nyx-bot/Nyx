@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs');
 
 global.ctx = {
     ready: false,
@@ -8,7 +8,7 @@ global.ctx = {
             MessageActionRow: require('discord.js').MessageActionRow,
             MessageButton: require('discord.js').MessageButton,
         },
-        jimp: require('jimp'),
+        ffprobe: require('ffprobe-client'),
         Discord: require('discord.js')
     },
     utils: {

@@ -5,7 +5,7 @@
     "discord-api-types": "^0.36.1",
     "discord.js": "^13.8.1",
     "fastify": "^4.2.0",
-    "jimp": "^0.16.1",
+    "ffprobe-client": "^1.1.6",
     "sequelize": "^6.21.2",
     "sqlite3": "^5.0.8",
     "superagent": "^8.0.0"

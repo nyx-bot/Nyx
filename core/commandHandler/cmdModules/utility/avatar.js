@@ -9,16 +9,13 @@ const func = interaction => {
         .setImage(member.user.avatarURL({ size: 600, dynamic: true }))
         .setColor(ctx.utils.colors(`random`));
         
-        interaction.reply({
-            content: `Avatar of **${ctx.utils.escape(member.user.username)}**`,
-            embeds: [embed.toJSON()],
-        }).then(async r => {
-            ctx.libs.jimp.read(member.user.avatarURL({
-                dynamic: false, 
-                format: `png`,
-                size: 4096, // biggest size that discord's CDN holds
-            })).then(async img => {
-                const size = img.bitmap.width > img.bitmap.height ? img.bitmap.width : img.bitmap.height
+        ctx.libs.ffprobe(member.user.avatarURL({
+            dynamic: false,
+            format: `png`,
+            size: 4096
+        })).then(img => {
+            if(img && img.streams && img.streams[0] && img.streams[0].width && img.streams[0].height) {
+                const size = img.streams[0].width > img.streams[0].height ? img.streams[0].width : img.streams[0].height
 
                 let discordCDNSizes = [ 16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096 ];
 
@@ -66,24 +63,24 @@ const func = interaction => {
                 
                 components.push(new ctx.libs.builder.MessageActionRow().addComponents(...buttons));
 
-                interaction.editReply({
+                interaction.reply({
                     content: `Avatar of **${ctx.utils.escape(member.user.username)}**`,
                     embeds: [embed.toJSON()],
                     components
                 })
-            })
-        })
+            }
+        });
     }
 };
 
 module.exports = {
     func,
     interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
-        .setDescription(`Retrieve someone's profile banner!`)
+        .setDescription(`Retrieve someone's profile avatar!`)
         .setDefaultPermission(true)
         .addUserOption(s => {
             s.setName(`user`)
-            s.setDescription(`The person who has the profile banner`)
+            s.setDescription(`The person who has the profile avatar`)
             s.setRequired(false);
 
             return s;

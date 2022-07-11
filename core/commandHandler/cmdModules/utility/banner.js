@@ -13,17 +13,14 @@ const func = interaction => {
             .setTitle(`${ctx.utils.escape(member.user.username)}#${ctx.utils.escape(member.user.discriminator)}`)
             .setImage(member.user.bannerURL({ size: 600, dynamic: true }))
             .setColor(ctx.utils.colors(`random`));
-            
-            interaction.reply({
-                content: `Banner of **${ctx.utils.escape(member.user.username)}**`,
-                embeds: [embed.toJSON()],
-            }).then(async r => {
-                ctx.libs.jimp.read(member.user.bannerURL({
-                    dynamic: false, 
-                    format: `png`,
-                    size: 4096, // biggest size that discord's CDN holds
-                })).then(async img => {
-                    const size = img.bitmap.width > img.bitmap.height ? img.bitmap.width : img.bitmap.height
+        
+            ctx.libs.ffprobe(member.user.bannerURL({
+                dynamic: false, 
+                format: `png`,
+                size: 4096, // biggest size that discord's CDN holds
+            })).then(img => {
+                if(img && img.streams && img.streams[0] && img.streams[0].width && img.streams[0].height) {
+                    const size = img.streams[0].width > img.streams[0].height ? img.streams[0].width : img.streams[0].height
     
                     let discordCDNSizes = [ 16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096 ];
     
@@ -43,7 +40,7 @@ const func = interaction => {
                         }; buttons.push(button)
                     }
     
-                    for(s of sizes.slice(-10)) if(typeof s === `number`) append(
+                    for(s of sizes.filter(s => s % 16 === 0).slice(-4)) if(typeof s === `number`) append(
                         new ctx.libs.builder.MessageButton()
                         .setURL(member.user.bannerURL({ size: s, format: `png`, dynamic: true }))
                         .setLabel(`${s}px`)
@@ -71,13 +68,13 @@ const func = interaction => {
                     
                     components.push(new ctx.libs.builder.MessageActionRow().addComponents(...buttons));
     
-                    interaction.editReply({
+                    interaction.reply({
                         content: `Banner of **${ctx.utils.escape(member.user.username)}**`,
-                        embeds: [embed],
+                        embeds: [embed.toJSON()],
                         components
                     })
-                })
-            })
+                }
+            });
         }
     })
 };

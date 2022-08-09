@@ -8,8 +8,8 @@ module.exports = interaction => new Promise(async res => {
 
             const file = `${global.ctx.cmdModuleMap.get(interaction.message.interaction.commandName.toLowerCase()).toLowerCase()}/${interaction.message.interaction.commandName.toLowerCase()}`
 
-            const preferredLanguage = `./lang/${interaction.locale}/${file}.js`;
-            const defaultLanguage = `./lang/${require(`../../config.json`).defaultLanguage}/${file}.js`;
+            const preferredLanguage = `./lang/${interaction.locale}/${file}.json`;
+            const defaultLanguage = `./lang/${require(`../../config.json`).defaultLanguage}/${file}.json`;
 
             if(fs.existsSync(preferredLanguage)) {
                 console.log(`Locale ${interaction.locale} file exists for ${file}`);

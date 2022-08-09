@@ -1,5 +1,5 @@
 const func = (interaction) => interaction.reply({
-    content: interaction.langFile[Math.floor((Math.random() * interaction.langFile.length))]
+    content: interaction.langFile.responses[Math.floor((Math.random() * interaction.langFile.responses.length))]
 });
 
 module.exports = {

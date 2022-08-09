@@ -20,15 +20,15 @@ module.exports = require('../util/hijackEvents')(new Discord.Client({
         `REACTION`
     ],
     intents: [ 
-        `GUILDS`, 
-        `GUILD_MEMBERS`, 
-        `GUILD_BANS`, 
-        `GUILD_EMOJIS_AND_STICKERS`, 
-        `GUILD_INTEGRATIONS`, 
-        `GUILD_WEBHOOKS`, 
-        `GUILD_INVITES`, 
-        `GUILD_MESSAGES`, 
-        `GUILD_MESSAGE_REACTIONS`, 
-        `GUILD_MESSAGE_TYPING` 
+        `Guilds`, 
+        `GuildMembers`, 
+        `GuildBans`, 
+        `GuildEmojisAndStickers`, 
+        `GuildIntegrations`, 
+        `GuildWebhooks`, 
+        `GuildInvites`, 
+        `GuildMessages`, 
+        `GuildMessageReactions`, 
+        `GuildMessageTyping` 
     ]
 }), `discordClient`)

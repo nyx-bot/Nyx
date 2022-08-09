@@ -2,13 +2,13 @@ const fs = require('fs');
 
 const { token, botID, elevated } = require('../../config.json');
 
-const { Routes } = require('discord-api-types/v9'), rest = new (require('@discordjs/rest').REST)({ version: '9' }).setToken(token);
+const { Routes } = require('discord-api-types/v10'), rest = new (require('@discordjs/rest').REST)({ version: '10', authPrefix: `Bot` }).setToken(token);
 
 module.exports = () => new Promise(async res => {
     console.log(`Fetching existing commands library from Discord API...`);
     let existingCommands;
     try {
-        existingCommands = await rest.get(Routes.applicationCommands(botID));
+        existingCommands = await rest.get(Routes.applicationCommands(botID), {auth: true});
     } catch(e) {
         if(`${e}`.toLowerCase().includes(`unauthorized`)) {
             console.error(`The token provided is invalid! (Discord returned an error code of 401, meaning "unauthorized")`)

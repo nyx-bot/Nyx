@@ -51,7 +51,16 @@ const createDiscordClient = async () => new Promise(async res => {
             const isCommand = interaction.isCommand() ? `COMMAND` : null;
             const isButton = interaction.isButton() || interaction.isSelectMenu() ? `BUTTON` : null;
 
-            let log = `[${(isCommand ? isCommand + ` ` : ``) + (isButton ? isButton + ` ` : ``) + interaction.type.toUpperCase()} INTERACTION]`;
+            let type = `Discord`;
+            switch (interaction.type) {
+                case 2: type = `Command`;
+                case 4: type = `CommandAutocomplete`;
+                case 3: type = `MessageComponent`;
+                case 5: type = `ModalSubmit`;
+                case 1: type = `Ping`
+            }
+
+            let log = `[${(isCommand ? isCommand + ` ` : ``) + (isButton ? isButton + ` ` : ``) + type.toUpperCase()} INTERACTION]`;
             if(interaction.guild) log = log + `\n| Guild ID: ${interaction.guild.id || interaction.guildId}`;
             if(interaction.channel) log = log + `\n| Channel ID: ${interaction.channel.id || interaction.channelId}`
             if(interaction.user) log = log + `\n| User ID: ${interaction.user.id}`;

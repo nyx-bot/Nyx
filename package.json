@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "@discordjs/rest": "^0.5.0",
-    "cron": "^2.0.0",
-    "discord-api-types": "^0.36.1",
-    "discord.js": "^13.8.1",
-    "fastify": "^4.2.0",
+    "@discordjs/rest": "^1.0.1",
+    "cron": "^2.1.0",
+    "discord-api-types": "^0.37.1",
+    "discord.js": "^14.1.2",
+    "fastify": "^4.4.0",
     "ffprobe-client": "^1.1.6",
-    "sequelize": "^6.21.2",
-    "sqlite3": "^5.0.8",
+    "sequelize": "^6.21.3",
+    "sqlite3": "^5.0.11",
     "superagent": "^8.0.0"
   },
   "name": "nyx",

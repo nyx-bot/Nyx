@@ -5,7 +5,7 @@ const func = (interaction) => {
 
         if(content.length > 2000) {
             return interaction.reply({
-                content: `${ctx.emojis.fail} I cannot send messages above the character limit of 2,000!`, 
+                content: `${ctx.emojis.fail} ${interaction.langFile.responses[`too-long`]}`, 
                 ephemeral: true
             })
         } else {
@@ -15,13 +15,13 @@ const func = (interaction) => {
             
             if(content.length > 2000) {
                 return interaction.reply({
-                    content: `${ctx.emojis.fail} The final result is above the character limit of 2,000! (${content.length})`, 
+                    content: `${ctx.emojis.fail} ${interaction.langFile.responses[`translation-too-long`]} (${content.length})`, 
                     ephemeral: true
                 })
             } else {
                 interaction.reply({
                     ephemeral: true,
-                    content: `${ctx.emojis.pass} Here you go!`,
+                    content: `${ctx.emojis.pass} ${interaction.langFile.responses[`success`]}`,
                     embeds: [
                         new ctx.libs.builder.EmbedBuilder()
                             .setDescription(content)
@@ -36,14 +36,20 @@ const func = (interaction) => {
 
 module.exports = {
     func,
-    interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
-        .setDescription(`OwO-ifies what you say!`)
-        .setDefaultPermission(true)
-        .addStringOption(s => {
-            s.setName(`message`);
-            s.setDescription(`What would you like to owo-ify?`)
-            s.setRequired(true);
-
-            return s;
-        })
+    interactionOptions: [
+        {
+            type: `string`,
+            required: true,
+        }
+    ]
+    //interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
+    //    .setDescription(`OwO-ifies what you say!`)
+    //    .setDefaultPermission(true)
+    //    .addStringOption(s => {
+    //        s.setName(`message`);
+    //        s.setDescription(`What would you like to owo-ify?`)
+    //        s.setRequired(true);
+//
+    //        return s;
+    //    })
 }

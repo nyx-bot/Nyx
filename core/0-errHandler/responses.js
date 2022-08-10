@@ -16,7 +16,7 @@ module.exports = (interaction, message, err, ...content) => {
             .setURL(`https://nyx.bot/server`)
             .setEmoji(`${ctx.emojis.nyx.happy}`)
             .setLabel(`Send us a message in the Nyx's Shrine Discord Server`)
-            .setStyle(`LINK`)
+            .setStyle(`Link`)
         )],
         ephemeral: true,
     };

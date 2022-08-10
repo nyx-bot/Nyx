@@ -4,9 +4,9 @@ global.ctx = {
     ready: false,
     libs: {
         builder: {
+            MessageActionRow: require('discord.js').ActionRowBuilder,
+            MessageButton: require('discord.js').ButtonBuilder,
             ...require('@discordjs/builders'),
-            MessageActionRow: require('discord.js').MessageActionRow,
-            MessageButton: require('discord.js').MessageButton,
         },
         ffprobe: require('ffprobe-client'),
         Discord: require('discord.js')

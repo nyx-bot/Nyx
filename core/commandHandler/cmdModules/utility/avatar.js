@@ -39,7 +39,7 @@ const func = interaction => {
                     new ctx.libs.builder.MessageButton()
                     .setURL(member.user.avatarURL({ size: s, format: `png`, dynamic: true }))
                     .setLabel(`${s}px`)
-                    .setStyle(`LINK`)
+                    .setStyle(`Link`)
                 )
                 
                 if(size-5 > sizes.slice(-1)[0]) {
@@ -49,7 +49,7 @@ const func = interaction => {
                         new ctx.libs.builder.MessageButton()
                         .setURL(member.user.avatarURL({ size: discordCDNSizes[discordCDNSizes.indexOf(sizes.slice(-1)[0])+1], format: `png`, dynamic: true }))
                         .setLabel(`${size}px (Original)`)
-                        .setStyle(`LINK`)
+                        .setStyle(`Link`)
                     )
                 } else {
                     if(buttons[buttons.length-1]) buttons[buttons.length-1].setLabel(buttons[buttons.length-1].label + ` (Original)`)

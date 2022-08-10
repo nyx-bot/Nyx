@@ -45,7 +45,7 @@ const func = async (interaction) => {
         new ctx.libs.builder.MessageButton()
         .setLabel(`Nyx's Website`)
         .setEmoji(`${ctx.emojis.nyx.sylhug}`)
-        .setStyle(`LINK`)
+        .setStyle(`Link`)
         .setURL(`https://nyx.bot/`)
     )
 
@@ -53,7 +53,7 @@ const func = async (interaction) => {
         new ctx.libs.builder.MessageButton()
         .setLabel(`Invite Nyx to your server!`)
         .setEmoji(`${ctx.emojis.nyx.happy}`)
-        .setStyle(`LINK`)
+        .setStyle(`Link`)
         .setURL(`https://nyx.bot/i`)
     )
 
@@ -61,7 +61,7 @@ const func = async (interaction) => {
         new ctx.libs.builder.MessageButton()
         .setLabel(`Join Nyx's Shrine!`)
         .setEmoji(`${ctx.emojis.nyx.pat}`)
-        .setStyle(`LINK`)
+        .setStyle(`Link`)
         .setURL(`https://nyx.bot/server`)
     )
     

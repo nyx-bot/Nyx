@@ -8,14 +8,20 @@ const func = async interaction => {
 
 module.exports = {
     func,
-    interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
-        .setDescription(`see how gay someone is (trustworthy 100).`)
-        .setDefaultPermission(true)
-        .addUserOption(s => {
-            s.setName(`user`);
-            s.setRequired(true);
-            s.setDescription(`the person you want to measure with your very very trustworthy and totally non-rng gaydar`)
+    interactionOptions: [
+        {
+            type: `user`,
+            required: true,
+        }
+    ],
+    //interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
+    //    .setDescription(`see how gay someone is (trustworthy 100).`)
+    //    .setDefaultPermission(true)
+    //    .addUserOption(s => {
+    //        s.setName(`user`);
+    //        s.setRequired(true);
+    //        s.setDescription(`the person you want to measure with your very very trustworthy and totally non-rng gaydar`)
 
-            return s;
-        })
+    //        return s;
+    //    })
 }

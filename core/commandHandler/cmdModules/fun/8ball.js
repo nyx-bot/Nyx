@@ -4,14 +4,20 @@ const func = (interaction) => interaction.reply({
 
 module.exports = {
     func,
-    interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
-        .setDescription(`the most trustworthy system to ask a question.`)
-        .setDefaultPermission(true)
-        .addStringOption(s => {
-            s.setName(`query`);
-            s.setDescription(`What would you like to ask the "Most Trustworthy System?"`)
-            s.setRequired(true);
+    interactionOptions: [
+        {
+            type: `string`,
+            required: true,
+        }
+    ],
+    //interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
+    //    .setDescription(`the most trustworthy system to ask a question.`)
+    //    .setDefaultPermission(true)
+    //    .addStringOption(s => {
+    //        s.setName(`query`);
+    //        s.setDescription(`What would you like to ask the "Most Trustworthy System?"`)
+    //        s.setRequired(true);
 
-            return s;
-        })
+    //        return s;
+    //    })
 }

@@ -19,14 +19,20 @@ const func = interaction => {
 
 module.exports = {
     func,
-    interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
-        .setDescription(`Turn :clap: your :clap: message :clap: into :clap: this :clap: abomination`)
-        .setDefaultPermission(true)
-        .addStringOption(s => {
-            s.setName(`content`);
-            s.setRequired(true);
-            s.setDescription(`the message you want to convert`)
-
-            return s;
-        })
+    interactionOptions: [
+        {
+            type: `string`,
+            required: true,
+        }
+    ]
+    //interaction: new (require('@discordjs/builders').SlashCommandBuilder)()
+    //    .setDescription(`Turn :clap: your :clap: message :clap: into :clap: this :clap: abomination`)
+    //    .setDefaultPermission(true)
+    //    .addStringOption(s => {
+    //        s.setName(`content`);
+    //        s.setRequired(true);
+    //        s.setDescription(`the message you want to convert`)
+//
+    //        return s;
+    //    })
 }

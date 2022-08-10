@@ -6,7 +6,7 @@ module.exports = interaction => new Promise(async res => {
             const command = global.ctx.modules[global.ctx.cmdModuleMap.get(interaction.commandName.toLowerCase())].commands[interaction.commandName.toLowerCase()]
             res(command);
 
-            const file = `${global.ctx.cmdModuleMap.get(interaction.commandName.toLowerCase()).toLowerCase()}/${interaction.commandName.toLowerCase()}`
+            const file = `${global.ctx.cmdModuleMap.get(interaction.commandName.toLowerCase()).toLowerCase()}/${interaction.commandName.toLowerCase()}`;
 
             const preferredLanguage = `./lang/${interaction.locale}/${file}.json`;
             const defaultLanguage = `./lang/${require(`../../config.json`).defaultLanguage}/${file}.json`;

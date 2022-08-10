@@ -79,29 +79,34 @@ module.exports = () => new Promise(async res => {
 
                     const primary = languages[`en-US`].command;
 
-                    c.interaction.setName(primary.name || `${cmd}`.toLowerCase().replace(`.js`, ``));
-                    console.log(`  ---------------------------  \n| Name for ${command.name}: ${primary.name}`)
+                    c.interaction.setName(primary && primary.name ? primary.name : `${cmd}`.toLowerCase().replace(`.js`, ``));
+                    console.log(`  ---------------------------  \n| Name for ${command.name}: ${c.interaction.name}`)
                     for(lang of Object.entries(languages)) {
-                        c.interaction.setNameLocalization(lang[0], lang[1].command.name);
-                        console.log(`| ${lang[0]}: ${lang[1].command.name}`)
-                    };
-
-                    if(primary.description && `${primary.description}`.length >= 5) {
-                        c.interaction.setDescription(`[${m[0].toUpperCase() + m.slice(1)}] // ${primary.description}`);
-                        console.log(`| Description for ${command.name}: ${`[${m[0].toUpperCase() + m.slice(1)}] // ${primary.description}`}`)
-                        for(lang of Object.entries(languages)) {
-                            c.interaction.setDescriptionLocalization(lang[0], lang[1].command.description);
-                            console.log(`| ${lang[0]}: ${lang[1].command.description}`)
+                        if(lang[1] && lang[1].command && lang[1].command.name) {
+                            c.interaction.setNameLocalization(lang[0], lang[1].command.name);
+                            console.log(`| ${lang[0]}: ${lang[1].command.name}`)
                         }
                     };
+
+                    if(primary && primary.description && `${primary.description}`.length >= 5) {
+                        console.log(primary.description)
+                        c.interaction.setDescription(`[${m[0].toUpperCase() + m.slice(1)}] // ${primary.description}`);
+                        console.log(`| Description for ${command.name}: ${`[${m[0].toUpperCase() + m.slice(1)}] // ${c.interaction.description}`}`)
+                        for(lang of Object.entries(languages)) {
+                            if(lang[1] && lang[1].command && lang[1].command.description) {
+                                c.interaction.setDescriptionLocalization(lang[0], lang[1].command.description);
+                                console.log(`| ${lang[0]}: ${lang[1].command.description}`)
+                            }
+                        }
+                    }
 
                     if(c.interactionOptions && primary.options.length == c.interactionOptions.length) {
                         for(i in c.interactionOptions) {
                             const functionName = `add${c.interactionOptions[i].type[0].toUpperCase() + c.interactionOptions[i].type.slice(1).toLowerCase()}Option`
                             if(typeof c.interaction[functionName] == `function`) {
                                 c.interaction[functionName](o => {
-                                    o.setName(primary.options[i].name);
-                                    o.setDescription(primary.options[i].description);
+                                    if(primary.options[i].name) o.setName(primary.options[i].name);
+                                    if(primary.options[i].description) o.setDescription(primary.options[i].description);
 
                                     console.log(`| ${functionName} (${primary.options[i].name} / ${primary.options[i].description})`);
 
@@ -123,7 +128,7 @@ module.exports = () => new Promise(async res => {
                                 })
                             }
                         }
-                    } else if(primary.options.length != c.interactionOptions.length) {
+                    } else if(primary && primary.options && primary.options.length && primary.options.length != c.interactionOptions.length) {
                         console.error(`Command ${m[0].toUpperCase() + m.slice(1)}/${`${cmd}`.toLowerCase().replace(`.js`, ``)} has interaction options, but does not match with the amount of options defined in the en-US locale! (command: ${c.interactionOptions.length}, locale: ${primary.options.length})`);
                         await new Promise(r => setTimeout(r, 2000))
                     }

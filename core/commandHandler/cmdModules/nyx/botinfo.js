@@ -9,12 +9,12 @@ const func = async (interaction) => {
     embed.addFields([
         {
             name: `${ctx.emojis.nyxWhite} ${interaction.langFile.responses[`in-embed`].servers}`,
-            value: `${interaction.langFile.responses[`in-embed`][`this-shard`].replace(/%num%/g, stats.serversOnThisShard)}\n${interaction.langFile.responses[`in-embed`][`all-shards`].replace(/%num/g, stats.totalServers)}`,
+            value: `${interaction.langFile.responses[`in-embed`][`this-shard`].replace(/%num%/g, stats.serversOnThisShard)}\n${interaction.langFile.responses[`in-embed`][`all-shards`].replace(/%num%/g, stats.totalServers)}`,
             inline: true,
         },
         {
             name: `${ctx.emojis.nyxWhite} ${interaction.langFile.responses[`in-embed`].users}`,
-            value: `${interaction.langFile.responses[`in-embed`][`this-shard`].replace(/%num%/g, stats.membersOnThisShard)}\n${interaction.langFile.responses[`in-embed`][`all-shards`].replace(/%num/g, stats.totalMembers)}`,
+            value: `${interaction.langFile.responses[`in-embed`][`this-shard`].replace(/%num%/g, stats.membersOnThisShard)}\n${interaction.langFile.responses[`in-embed`][`all-shards`].replace(/%num%/g, stats.totalMembers)}`,
             inline: true,
         },
         {
@@ -36,6 +36,10 @@ const func = async (interaction) => {
             name: `${ctx.emojis.icons.nodejs} ${interaction.langFile.responses[`in-embed`][`discord-js-version`]}`,
             value: `v${require('../../../../package.json').dependencies['discord.js'].replace('^', '')}`,
             inline: true,
+        },
+        {
+            name: `${ctx.emojis.nyx.mechanic} ${interaction.langFile.responses[`in-embed`][`powered-by`].title}`,
+            value: `> [**${interaction.langFile.responses[`in-embed`][`powered-by`].advertisement}**](https://www.linode.com/lp/refer/?r=b5af259a0c96e896ed5142ea484721cbf1365ae5) ${interaction.langFile.responses[`in-embed`][`powered-by`].referral}\n> *[${interaction.langFile.responses[`in-embed`][`powered-by`][`read-more`]}](https://www.linode.com/referral-program/)*`
         }
     ]);
 

@@ -26,7 +26,7 @@ module.exports = {
         vomit: `<:NyxVomit:942164350951645246>`,
     },
 
-    nyxWhite: `<:nyx:732595012617109531>`,
+    nyxWhite: `<:NyxHappy:942164350716764160>`,
 
     command: {
         slash: `<:slash:938546891287826433>`,

@@ -1,1 +1,0 @@
-require('./core/0-errHandler/index')().then(() => console.error(`test`, {test: true}, require('./util/time')(123890)))

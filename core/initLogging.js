@@ -15,7 +15,6 @@ module.exports = () => {
     logs.forEach(channel => {
         let name = channel.name
         if(name == `info`) name = `log`;
-        console.log(`mapping ${name} to channel ${channel.name}`)
         outputs[name] = (...args) => channel.send(...args)
     });
     

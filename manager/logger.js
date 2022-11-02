@@ -1,49 +1,31 @@
 const c = {
-    reset: "\x1b[0m",
-    bold: "\x1b[1m",
-    italic: "\x1b[3m",
-    underline: "\x1b[4m",
-    strike: "\x1b[9m",
-    clearline: "\x1b[K",
-    black: "\x1b[30m",
-    red: "\x1b[31m",
-    green: "\x1b[32m",
-    yellow: "\x1b[33m",
-    blue: "\x1b[34m",
-    magenta: "\x1b[35m",
-    cyan: "\x1b[36m",
-    white: "\x1b[37m",
-    blackbg: "\x1b[40m",
-    redbg: "\x1b[41m",
-    greenbg: "\x1b[42m",
-    yellowbg: "\x1b[43m",
-    bluebg: "\x1b[44m",
-    magentabg: "\x1b[45m",
-    cyanbg: "\x1b[46m",
-    whitebg: "\x1b[47m"
+    reset: "\x1b[0m", bold: "\x1b[1m", italic: "\x1b[3m", underline: "\x1b[4m", strike: "\x1b[9m", clearline: "\x1b[K",
+    black: "\x1b[30m", red: "\x1b[31m", green: "\x1b[32m", yellow: "\x1b[33m", blue: "\x1b[34m", magenta: "\x1b[35m", cyan: "\x1b[36m", white: "\x1b[37m",
+    blackbg: "\x1b[40m", redbg: "\x1b[41m", greenbg: "\x1b[42m", yellowbg: "\x1b[43m", bluebg: "\x1b[44m", magentabg: "\x1b[45m", cyanbg: "\x1b[46m", whitebg: "\x1b[47m"
 }; 
 
 const tag = (type, colors, cluster) => {
-    let beforeTrim = ` `.repeat(Math.floor((6 - type.length)/2))
-    let afterTrim = ` `.repeat(Math.ceil((6 - type.length)/2))
+    let tagTypeLength = 5
 
-    return colors.join(``) + `${`[ ${beforeTrim}${type.toUpperCase()}${afterTrim} / ${`${cluster}`.length === 1 ? `0${cluster}` : cluster} ]`}`.trim() + c.reset
+    let beforeTrim = ` `.repeat(Math.floor((tagTypeLength - type.length)/2))
+    let afterTrim = ` `.repeat(Math.ceil((tagTypeLength - type.length)/2))
+
+    return colors.join(``) + `┃` + ` ${`${cluster}`.length === 1 ? `0${cluster}` : cluster}` + c.reset + colors[1] + ` ${beforeTrim}${type.toUpperCase()}${afterTrim}` + c.reset + ` `
 }
 
 let types = [
-    [`debug`, c.cyanbg], 
-    [`info`, c.whitebg, c.black], 
-    [`error`, c.redbg], 
-    [`warn`, c.yellowbg, c.black], 
-    [`log`, c.whitebg, c.black]
+    [`debug`, c.bold, c.cyan], 
+    [`info`, c.bold, c.white], 
+    [`error`, c.bold, c.red], 
+    [`warn`, c.bold, c.yellow], 
+    [`log`, c.bold, c.white],
+    [`main`, c.bold, c.magenta],
 ];
 
 let logChannels = {};
 
 types.forEach(rawtype => {
-    let type = rawtype[0], colors = rawtype.slice(2)
-
-    console.log(`setting log function ${type} with tag ${tag(type, [])}`)
+    let type = rawtype[0], colors = rawtype.slice(1)
 
     logChannels[type] = (c, ...m) => m.forEach(msg => {
         try {
@@ -54,7 +36,5 @@ types.forEach(rawtype => {
         }
     })
 });
-
-console.log(logChannels)
 
 module.exports = logChannels

@@ -4,7 +4,9 @@ module.exports = () => {
     const logs = logChannels.map(name => {
         return {
             name,
-            send: (...args) => args.forEach(msg => process.send({ name, msg }))
+            send: (...args) => args.map(msg => {
+                return (typeof msg == `string` ? msg : require("util").inspect(msg, { depth: 0 })).split(`\n`)
+            }).forEach(array => array.forEach(msg => process.send({ name, msg })))
         }
     });
 
@@ -12,14 +14,15 @@ module.exports = () => {
 
     logs.forEach(channel => {
         let name = channel.name
-        if(name == `log`) name = `debug`;
-        if(name == `info`) name = `log`
+        if(name == `info`) name = `log`;
+        console.log(`mapping ${name} to channel ${channel.name}`)
         outputs[name] = (...args) => channel.send(...args)
     });
     
     Object.keys(outputs).forEach(name => {
         console[name] = outputs[name];
-        console[name](`Testing console.${name}`)
+        console[name[0]] = outputs[name]
+        console[name](`Testing console.${name} (also setting console.${name[0]})`)
     })
 
     console.log(`Successfully set up logging channels!`)

@@ -1,0 +1,1 @@
+module.exports = () => new Promise(async res => res((await manager.fetchClientValues(`guilds.cache.size`)).reduce((a,b) => a+b)))

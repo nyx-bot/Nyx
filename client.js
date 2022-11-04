@@ -1,11 +1,7 @@
-require(`./core/initLogging`)()
+require(`./core/initialize`)().then(async () => {    
+    ctx.bot.on(`ready`, () => {
+        console.log(`bot marked as ready!`)
+    })
 
-global.ctx = require(`./core/initCtx`)();
-
-ctx.bot = require(`./clientSettings`);
-
-ctx.bot.on(`ready`, () => {
-    console.log(`Cluster #${ctx.bot.cluster.id} is ready!`)
+    ctx.bot.login();
 })
-
-ctx.bot.login();

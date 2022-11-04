@@ -21,8 +21,8 @@ module.exports = () => {
     Object.keys(outputs).forEach(name => {
         console[name] = outputs[name];
         console[name[0]] = outputs[name]
-        console[name](`Testing console.${name} (also setting console.${name[0]})`)
+        //console[name](`Testing console.${name} (also setting console.${name[0]})`)
     })
 
-    console.log(`Successfully set up logging channels!`)
+    //console.log(`Successfully set up logging channels!`)
 }

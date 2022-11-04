@@ -1,14 +1,16 @@
+const debug = process.argv.find(a => a.toLowerCase() == `debug`) ? true : false
+
 const config = require('./config.json');
 
 const { ClusterManager } = require('discord.js-cluster');
 
 const manager = new ClusterManager(`./client.js`, {
-    token: config.token
+    token: config.token,
 });
 
 const logger = require('./manager/logger');
 
-const log = (...d) => logger.main(0, ...d)
+const log = (...d) => logger.main(`--`, ...d)
 
 const logStats = async () => {
     const guildsOnAllShards = await manager.fetchClientValues(`guilds.cache.size`);
@@ -22,7 +24,7 @@ manager.on(`clusterCreate`, cluster => {
 
     cluster.on(`message`, opt => {
         try {
-            if(logger[opt.name]) {
+            if(logger[opt.name] && ((opt.name == `debug` && debug) || opt.name != `debug`)) {
                 logger[opt.name](Number(cluster.id)+1, opt.msg)
             }
         } catch(e) {console.error(e)}

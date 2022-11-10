@@ -45,6 +45,7 @@ for (m of modules) {
             })
             
             cmds[m][friendlyName] = {
+                languages,
                 func: require(`../cmdModules/${m}/${cmd}`),
             }
         }

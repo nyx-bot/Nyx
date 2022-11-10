@@ -30,7 +30,7 @@ types.forEach(rawtype => {
     logChannels[type] = (c, ...m) => m.forEach(msg => {
         try {
             let thisTag = tag(type, colors, c);
-            console.log(`${thisTag} ` + (typeof msg == `string` ? msg : require("util").inspect(msg, { depth: 0 })).split(`\n`).map(s => s.trim()).join(`\n${thisTag} `))
+            console.log(`${thisTag} ` + (typeof msg == `string` ? msg : require("util").inspect(msg, { depth: 0 })).split(`\n`).join(`\n${thisTag} `))
         } catch(e) {
             console.error(e)
         }

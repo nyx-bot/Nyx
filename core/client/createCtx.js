@@ -3,7 +3,7 @@ const fs = require('fs')
 module.exports = () => {
     const ctx = {};
 
-    const modules = fs.readdirSync(`./core/ctxModules`).filter(m => m.endsWith(`.js`) || m.endsWith(`.json`));
+    const modules = fs.readdirSync(`./core/client/ctxModules`).filter(m => m.endsWith(`.js`) || m.endsWith(`.json`));
 
     for(file of modules) {
         const name = file.split(`.`).slice(0, -1).join(`.`)
@@ -14,6 +14,8 @@ module.exports = () => {
             console.warn(`[CTX] Failed to load ctx module ${file}! (${e})`)
         }
     };
+
+    console.d(`CTX created!`, require('util').inspect(ctx, false, 0))
 
     return ctx;
 }

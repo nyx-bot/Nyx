@@ -1,4 +1,4 @@
-let bot = require(`../../clientSettings`);
+let bot = require(`../../../clientSettings`);
 
 bot.on(`error`, e => {
     console.error(`Client error:`, e)

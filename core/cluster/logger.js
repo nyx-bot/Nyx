@@ -1,3 +1,5 @@
+const debug = process.argv.find(a => a.toLowerCase() == `debug`) ? true : false
+
 const c = {
     reset: "\x1b[0m", bold: "\x1b[1m", italic: "\x1b[3m", underline: "\x1b[4m", strike: "\x1b[9m", clearline: "\x1b[K",
     black: "\x1b[30m", red: "\x1b[31m", green: "\x1b[32m", yellow: "\x1b[33m", blue: "\x1b[34m", magenta: "\x1b[35m", cyan: "\x1b[36m", white: "\x1b[37m",
@@ -27,14 +29,23 @@ let logChannels = {};
 types.forEach(rawtype => {
     let type = rawtype[0], colors = rawtype.slice(1)
 
-    logChannels[type] = (c, ...m) => m.forEach(msg => {
+    if(console[type]) console[`original${type}`] = console[type]
+    if(console[type[0]]) console[`original${type[0]}`] = console[type[0]]
+
+    const func = (c, ...m) => m.forEach(msg => {
         try {
             let thisTag = tag(type, colors, c);
-            console.log(`${thisTag} ` + (typeof msg == `string` ? msg : require("util").inspect(msg, { depth: 0 })).split(`\n`).join(`\n${thisTag} `))
+            console[`original${type}`](`${thisTag} ` + (typeof msg == `string` ? msg : require("util").inspect(msg, { depth: 0 })).split(`\n`).join(`\n${thisTag} `))
         } catch(e) {
-            console.error(e)
+            console[`originalerror`](e)
         }
-    })
+    });
+
+    logChannels[type] = func
+    console[type] = (...d) => func(`--`, ...d);
+    console[type[0]] = (...d) => func(`--`, ...d);
+
+    if(!debug) logChannels[`debug`] = () => {}
 });
 
 module.exports = logChannels

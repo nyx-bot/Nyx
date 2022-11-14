@@ -8,7 +8,7 @@ module.exports = (interaction) => new Promise(async (res, rej) => {
     }
     
     try {
-        console.log(ctx.cmds)
+        console.debug(interaction)
 
         const args = interaction.options._hoistedOptions
         let locale = ctx.cmds[interaction.commandName].languages[interaction.locale];

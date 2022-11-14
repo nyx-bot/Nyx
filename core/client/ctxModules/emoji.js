@@ -22,6 +22,7 @@ module.exports = {
         sylhug: `<:NyxSylHug:942164350964220024>`,
         sporkle: `<:NyxSporkle:942164351022927922>`,
         tos: `<:NyxTOS:942164350985187358>`,
+        translator: `<:NyxTranslator:996035153455493211>`,
         tick: `<:NyxTick:942164350842601482>`,
         vomit: `<:NyxVomit:942164350951645246>`,
     },

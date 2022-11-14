@@ -23,6 +23,7 @@ module.exports = (m, cmd, name) => {
         });
 
         if(primaryKeys.length != 0) {
+            languages[lang.split(`/`).slice(2,3)[0]].missingValues = true;
             console.warn(`Language ${lang.split(`/`).slice(2,3)[0]} of command ${name} in module ${m} has a difference of ${primaryKeys.length} keys:`);
             primaryKeys.forEach(k => {
                 languages[lang.split(`/`).slice(2,3)[0]][k] = primary[k]

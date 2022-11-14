@@ -41,11 +41,15 @@ types.forEach(rawtype => {
         }
     });
 
-    logChannels[type] = func
-    console[type] = (...d) => func(`--`, ...d);
-    console[type[0]] = (...d) => func(`--`, ...d);
-
-    if(!debug) logChannels[`debug`] = () => {}
+    if(type != `debug` || (type == `debug` && debug)) {
+        logChannels[type] = func
+        console[type] = (...d) => func(`--`, ...d);
+        console[type[0]] = (...d) => func(`--`, ...d);
+    } else {
+        logChannels[type] = () => {}
+        console[type] = (...d) => {}
+        console[type[0]] = (...d) => {}
+    }
 });
 
 module.exports = logChannels

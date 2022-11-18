@@ -1,4 +1,8 @@
-const debug = process.argv.find(a => a.toLowerCase() == `debug`) ? true : false
+const logger = require('./core/cluster/logger');
+global.errorHandler = require(`./core/errorHandler`);
+
+process.on(`uncaughtException`, errorHandler)
+process.on(`unhandledRejection`, errorHandler)
 
 const config = require('./config.json');
 
@@ -8,9 +12,7 @@ global.manager = new ClusterManager(`./client.js`, {
     token: config.token,
 });
 
-const logger = require('./core/cluster/logger')
-
-require('./core/cluster/createSlashCommands')(logger).then(async cmds => {
+require('./core/cluster/createSlashCommands')().then(async cmds => {
     manager.on(`clusterCreate`, async cluster => {
         console.log(`Launched cluster ${Number(cluster.id)+1}`);
     
@@ -21,7 +23,9 @@ require('./core/cluster/createSlashCommands')(logger).then(async cmds => {
         cluster.on(`message`, opt => {
             try {
                 if(logger[opt.name]) {
-                    logger[opt.name](Number(cluster.id)+1, opt.msg)
+                    if(opt.name.toLowerCase() == `error` && errorHandler.find(opt.msg)) {
+                        errorHandler(opt.msg)
+                    } else logger[opt.name](Number(cluster.id)+1, opt.msg)
                 }
             } catch(e) {console.error(e)}
         })
@@ -39,4 +43,4 @@ require('./core/cluster/createSlashCommands')(logger).then(async cmds => {
     } catch(e) {
         console.error(`--`, `Failed to spawn cluster: ${e}`);
     }
-})
+}).catch(errorHandler)

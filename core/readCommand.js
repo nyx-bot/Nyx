@@ -3,7 +3,15 @@ const fs = require('fs')
 module.exports = (m, cmd, name) => {
     console.d(`> Reading command ${name} (${cmd}) from module ${m}`);
 
-    const langs = fs.readdirSync(`./lang/`).filter(lang => fs.existsSync(`./lang/${lang}/${m}/${name}.json`)).map(lang => `./lang/${lang}/${m}/${name}.json`);
+    const langs = fs.readdirSync(`./lang/`).filter(lang => {
+        return fs.existsSync(`./lang/${lang}/${m}/${name}.json`) || fs.existsSync(`./lang/${lang}/${m}/${name}.js`)
+    }).map(lang => {
+        if(fs.existsSync(`./lang/${lang}/${m}/${name}.json`)) {
+            return `./lang/${lang}/${m}/${name}.json`
+        } else {
+            return `./lang/${lang}/${m}/${name}.js`
+        }
+    });
 
     let languages = {};
 

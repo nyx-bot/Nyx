@@ -1,8 +1,9 @@
 // everything includes event stuff, ctx, and meta.
 async function check(ctx, guild, meta) { const g = await ctx.utils.lookupGuild(ctx, guild); if(g && g.logging === true && g.loggingchannelID !== null && g[`logging${meta}`] !== false && g.loggingchannelWebhook !== `{}`) {return g} else {return false} }
 
-guildRoleCreate = async function(guild, role, ctx, meta, mObj) {
-    try {
+guildRoleCreate = async function(role, ctx, meta, mObj) {
+    let guild = role.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return;
         let addedPerms = [];
@@ -30,8 +31,9 @@ guildRoleCreate = async function(guild, role, ctx, meta, mObj) {
     } catch(e) {}
 }
 
-guildRoleUpdate = async function(guild, role, oldRole, ctx, meta, mObj) {
-    try {
+guildRoleUpdate = async function(role, oldRole, ctx, meta, mObj) {
+    let guild = role.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return;
         const webhook = JSON.parse(g.loggingchannelWebhook)
@@ -108,8 +110,9 @@ guildRoleUpdate = async function(guild, role, oldRole, ctx, meta, mObj) {
     } catch(e) {}
 }
 
-guildRoleDelete = async function(guild, role, ctx, meta, mObj) {
-    try {
+guildRoleDelete = async function(role, ctx, meta, mObj) {
+    let guild = role.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return;
         const webhook = JSON.parse(g.loggingchannelWebhook)

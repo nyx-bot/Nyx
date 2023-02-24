@@ -15,7 +15,7 @@ module.exports = async (ctx, message) => {
      }, 35000)
      ctx.bot.removeAllListeners();
      console.d(`┃ REMOVED ALL LISTENERS FROM THE DISCORD CLIENT.`)
-     await ctx.bot.editStatus(`dnd`, {name: `loading... / nyx.bot`, type: 3});
+     await ctx.bot.editStatus(`dnd`, [{name: `loading... / nyx.bot`, type: 3}]);
      console.d(`┃ SET DISCORD STATUS TO DND`)
      let queues = Object.entries(ctx.music).filter(o => !isNaN(o[0]))
      console.d(`┃ ${queues.length} MUSIC SESSIONS ARE ACTIVE`)

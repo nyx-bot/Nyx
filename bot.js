@@ -314,7 +314,7 @@ core.initCommands(ctx).then(c => {
                                    core.boxLog(`┃ Spawning shards...`)
                                    ctx.core.spawnDiscordShards(ctx).then(async a => {
                                         refreshTimeout()
-                                        await ctx.bot.editStatus(`dnd`, {name: `loading... / nyx.bot`, type: 3});
+                                        await ctx.bot.editStatus(`dnd`, [{name: `loading... / nyx.bot`, type: 3}]);
                                         core.boxLog(`┃ Successfully spawned !`)
                                         if(!ready) refreshTimeout(`[!] A SHARD HAS NOT BEEN SET AS READY WITHIN 30 SECONDS, QUITTING`)
                                         ctx.bot.once("ready", async () => {

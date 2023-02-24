@@ -38,7 +38,7 @@ module.exports = async function (ctx) {
                console.d(`NO CACHE FOR ${k.toUpperCase()}, REMAINS AT ${core.stats.s[k]}`)
           }
      })
-     await ctx.bot.editStatus(`online`, {name: `/help / ;help`, type: 3});
+     await ctx.bot.editStatus(`online`, [{name: `/help / ;help`, type: 3}]);
      ctx.timer.start()
      ctx.timer2.start()
      Object.keys(ctx.statsTimers).forEach(timer => {

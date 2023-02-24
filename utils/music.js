@@ -1233,7 +1233,7 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
 
                 if(log.includes(`size=`)) {
                     const size = Number(log.split(`size=`)[1].match(/\d+/)[0]), time = log.split(`time=`)[1].trim().split(/(\s+)/)[0]
-                    console.d(`-- PROGRESS (${msg.channel.guild.id} / ${ctx.music[msg.channel.guild.id].queue[0][0]}):\n| Size: ${size}kB\n| Time: ${time}`);
+                    console.d(`-- PROGRESS (${msg.channel.guild.id} / ${ctx.music[msg.channel.guild.id].queue[0] ? ctx.music[msg.channel.guild.id].queue[0][0] : `-- no data --`}):\n| Size: ${size}kB\n| Time: ${time}`);
                     if(size > 0 && !sentBack) {
                         sentBack = true;
                         res(true);
@@ -2139,7 +2139,7 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
             }
 
             if(JSON.stringify(thisSong) == JSON.stringify(json[0])) {
-                console.d(`This song ${thisSong.name} is equivalent to the previous song ${json[1].name}! Skipping this entry...`);
+                console.d(`This song ${thisSong.name} is equivalent to the previous song ${json[1] ? json[1].name : `-nope-`}! Skipping this entry...`);
                 return res({
                     json,
                     modified: false

@@ -222,6 +222,10 @@ module.exports = [
             console.d(`Moderator: ${moderator ? true : false} / Member: ${member ? true : false} / Action Type: ${audit.actionType}`)
 
             if(moderator && member) {
+                if (moderator.id == ctx.bot.user.id) {
+                    return console.d(`Member UID is equal to bot UID, doing nothing here.`)
+                }
+
                 console.d(audit)
     
                 // https://discord.com/developers/docs/change-log#guild-audit-log-events

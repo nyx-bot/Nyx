@@ -86,7 +86,7 @@ module.exports = {
             title: `${member.user.username}#${member.user.discriminator}${extname}`,
             description: icons,
             color: embedcolor,
-            thumbnail: {url: member.avatarURL},
+            thumbnail: {url: member.avatarURL()},
             fields: [
                 {
                     name: `**Registered:**`,

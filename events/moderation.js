@@ -11,7 +11,7 @@ userWarn = async function(warn, member, ctx, meta, mObj) {
             title: `Member Warned`,
             description: `**Member:** <@${warn.person}> [${warn.warning}${suffix} warning]\n**Moderator:** <@${warn.moderator}>\n**Reason:**\n> ${warn.reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -31,7 +31,7 @@ clearWarnings = async function(warn, member, ctx, meta, mObj) {
             title: `Member Warnings Cleared`,
             description: `**Member:** <@${warn.person}> [${warn.deleted} warning${suffix}]\n**Moderator:** <@${warn.moderator}>\n**Reason:**\n> ${warn.reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -50,7 +50,7 @@ deleteWarning = async function(warn, member, ctx, meta, mObj) {
             title: `Member Warning Removed`,
             description: `**Member:** <@${warn.person}> [Warning ${warn.wID}]\n**Moderator:** <@${warn.moderator}>\n**Reason:**\n> ${warn.reason.replace(/\n/g, '\n> ')}\n**Original Warning:**\n> ${warn.object.desc.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -69,7 +69,7 @@ memberKicked = async function(moderator, member, reason, ctx, meta, mObj) {
             title: `Member Kicked`,
             description: `**Member:** <@${member.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${member.username}#${member.discriminator}`)}**]\n**Moderator:** <@${moderator.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${moderator.username}#${moderator.discriminator}`)}**]\n**Reason:**\n> ${reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -92,7 +92,7 @@ memberBanned = async function(moderator, member, reason, time, ctx, meta, mObj) 
             title: `Member Banned`,
             description: `**Member:** <@${member.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${member.username}#${member.discriminator}`)}**]${timeToAAAAAAA}\n**Moderator:** <@${moderator.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${moderator.username}#${moderator.discriminator}`)}**]\n**Reason:**\n> ${reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -115,7 +115,7 @@ memberUnbanned = async function(moderator, member, reason, time, ctx, meta, mObj
             title: `Member${prefix} Unbanned`,
             description: `**Member:** <@${member.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${member.username}#${member.discriminator}`)}**]\n**Moderator:** <@${moderator.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${moderator.username}#${moderator.discriminator}`)}**]\n**Reason:**\n> ${reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -138,7 +138,7 @@ memberMuted = async function(moderator, member, reason, time, ctx, meta, mObj) {
             title: `Member Muted`,
             description: `**Member:** <@${member.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${member.username}#${member.discriminator}`)}**]${timeToAAAAAAA}\n**Moderator:** <@${moderator.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${moderator.username}#${moderator.discriminator}`)}**]\n**Reason:**\n> ${reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 
@@ -161,7 +161,7 @@ memberUnmuted = async function(moderator, member, reason, time, ctx, meta, mObj)
             title: `Member${prefix} Unmuted`,
             description: `**Member:** <@${member.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${member.username}#${member.discriminator}`)}**]\n**Moderator:** <@${moderator.id}> [**${ctx.utils.escapeDiscordsFuckingEditing(`${moderator.username}#${moderator.discriminator}`)}**]\n**Reason:**\n> ${reason.replace(/\n/g, '\n> ')}`,
             color: ctx.utils.colors('purple'),
-            thumbnail: {url: member.avatarURL}
+            thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
             embeds: [embd], 

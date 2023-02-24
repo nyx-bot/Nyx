@@ -14,7 +14,7 @@ userWarn = async function(warn, member, ctx, meta, mObj) {
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -34,7 +34,7 @@ clearWarnings = async function(warn, member, ctx, meta, mObj) {
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -53,7 +53,7 @@ deleteWarning = async function(warn, member, ctx, meta, mObj) {
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -72,7 +72,7 @@ memberKicked = async function(moderator, member, reason, ctx, meta, mObj) {
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -95,7 +95,7 @@ memberBanned = async function(moderator, member, reason, time, ctx, meta, mObj) 
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -118,7 +118,7 @@ memberUnbanned = async function(moderator, member, reason, time, ctx, meta, mObj
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -141,7 +141,7 @@ memberMuted = async function(moderator, member, reason, time, ctx, meta, mObj) {
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -164,7 +164,7 @@ memberUnmuted = async function(moderator, member, reason, time, ctx, meta, mObj)
             thumbnail: {url: member.avatarURL()}
         }
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
-            embeds: [embd], 
+            embeds: [embed], 
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
@@ -212,4 +212,31 @@ module.exports = [
         name: "Member Unmuted",
         func: memberUnmuted
     },
+    {
+        event: "guildAuditLogEntryCreate",
+        name: "Moderation Guild Audit",
+        func: (guild, audit, ctx, meta, mObj) => {
+            const moderator = guild.members.get(audit.userID) || ctx.bot.users.get(audit.userID);
+            const member = guild.members.get(audit.targetID) || ctx.bot.users.get(audit.targetID);
+
+            console.d(`Moderator: ${moderator ? true : false} / Member: ${member ? true : false} / Action Type: ${audit.actionType}`)
+
+            if(moderator && member) {
+                console.d(audit)
+    
+                // https://discord.com/developers/docs/change-log#guild-audit-log-events
+                // action type: https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events
+                if(audit.actionType == 20) {
+                    console.d(`kicked`)
+                    memberKicked(moderator, member, audit.reason || `N/A`, ctx, meta, mObj)
+                } else if(audit.actionType == 22) {
+                    console.d(`banned`)
+                    memberBanned(moderator, member, audit.reason || `N/A`, null, ctx, meta, mObj)
+                } else if(audit.actionType == 23) {
+                    console.d(`unbanned`)
+                    memberUnbanned(moderator, member, audit.reason || `N/A`, null, ctx, meta, mObj)
+                }
+            }
+        }
+    }
 ];

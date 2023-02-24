@@ -2221,37 +2221,12 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
             }
         }, 30000, `${np[7]}`);
 
-        /*try {
-            // (ctx, np, waitForReadable, addToCache, msg, fetchOnly, startTime)
-            play = await getStream(ctx, np, true, false, msg);
-            intEmit.emit(`isNowReady`);
-            console.d(`stream returned!!`)
-            play.once(`isNowReady`, () => {intEmit.emit(`isNowReady`); console.d(`isNowReady called`)})
-        } catch(e) {
-            console.error(e)
-            msg.reply(`${ctx.fail} I was unable to finish the previous song!\n${ctx.utils.parseMusicError(ctx, np[6], e)}`);
-            ctx.music[msg.channel.guild.id].nextTrack(`forceskip`)
-        }*/
-        
-        // (ctx, np, waitForReadable, addToCache, msg, fetchOnly, startTime)
-        
-        /*play = getStream(ctx, np, true, false, msg, true);
-
-        play.catch(e => {
-            console.error(e)
-            cancelStream();
-        });
-
-        play.then(r => play = r)*/
-
         ctx.music[msg.channel.guild.id].paused = false;
 
         ctx.music[msg.channel.guild.id].fetchNextTracks();
 
         const stream = () => new Promise(async (res, rej) => {
             if(ctx.music[msg.channel.guild.id].queue[0] && np[7] == ctx.music[msg.channel.guild.id].queue[0][7]) {
-                //console.log(`Stream has completed loading, and is ready to play!`, play);
-
                 if(ctx.music[msg.channel.guild.id].eq.next) {
                     ctx.music[msg.channel.guild.id].eq = ctx.music[msg.channel.guild.id].eq.next; 
                     delete ctx.music[msg.channel.guild.id].eq.next
@@ -2269,7 +2244,6 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
 
                 await ctx.music[msg.channel.guild.id].connection.startPlaying(null, STANDARDPLAYARGS(ctx.music[msg.channel.guild.id].queue[0][1][0] == null ? Object.assign({}, ctx.music[msg.channel.guild.id].eq, {samplemult: undefined}) : ctx.music[msg.channel.guild.id].eq));
 
-                //if(play.removeAllListeners) play.removeAllListeners(`isNowReady`);
                 updated = true, startedPlaying = true;
 
                 ctx.music[msg.channel.guild.id].nextTrackIsReady = true;

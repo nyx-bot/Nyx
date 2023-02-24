@@ -1,8 +1,11 @@
 node_modules/
-cache*
-modelsCache.json
 etc/
+res/etc/
+backup/
+logs/
+stats/
 config.json
+database.db.bak
 database.sqlite
 database.db
 database.db-journal
@@ -10,3 +13,4 @@ restart.json
 *.log
 .vsls.json
 .DS_Store
+cookies.txt

@@ -1,0 +1,9 @@
+{
+    "loggingchannels": "https://i.nyx.bot/webhooks/nyx1.png",
+    "loggingmoderation": "https://i.nyx.bot/webhooks/nyx2.png",
+    "loggingrole": "https://i.nyx.bot/webhooks/nyx3.png",
+    "loggingmessage": "https://i.nyx.bot/webhooks/nyx4.png",
+    "loggingmembers": "https://i.nyx.bot/webhooks/nyx5.png",
+    "logginginvites": "https://i.nyx.bot/webhooks/nyx6.png",
+    "main": "https://i.nyx.bot/webhooks/nyx0.png"
+}

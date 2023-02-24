@@ -1,34 +1,22 @@
 {
-    "language": "en-US",
-    "token": "DiscordTokenHere",
-    "botID": "BotIDHere",
-    "botListKeys": {
-        "enableServerCountSubmission": false,
-
-        "discordExtremeList": "https://discordextremelist.xyz/en-US/bots/nyx -> Manage Token -> Copy Token",
-        "discordBoats": "https://discord.boats/me -> API Token",
-        "discordListSpace": "https://discordlist.space/bot/600206352916414464/dashboard/tokens",
-        "discordbotlist": "https://discordbotlist.com/bots/nyx -> Generate token",
-        "discords": "https://discords.com/bots/bot/600206352916414464/token",
-        "discordbotsgg": "https://discord.bots.gg/docs",
-        "topgg": "https://top.gg/bot/600206352916414464/webhooks",
-        "botsondiscord": "https://bots.ondiscord.xyz/me/keys"
-    },
-    "musicAPI": {
-        "key": "Paste the Token accepted for your MusicAPI instance.",
-        "location": "Place the URL/IP & PORT of where the service runs."
-    },
-    "cacheAPI": {
-        "key": "Paste the Token accepted for your CacheAPI instance.",
-        "location": "Place the URL/IP & PORT of where the service runs."
-    },
-    "uptimeReport": {
-        "location": "Place the designated URL for Nyx to ping on a recurring basis to report that they are functioning well.",
-        "interval": "How many minutes in between pings? (default: 1)"
-    },
-    "elevated": [
-        "600206352916414464",
-        "Put your own Discord ID to gain access to secret commands!"
-    ],
-    "discordErrorWebhook": "add webhook URL here"
+     "token": "Bot {discord token}",
+     "keys": {
+          "topgg": "TopDotGG",
+          "genius": "genius-api-key",
+          "nyxbotapi": "if you have a key to nyx's api, place it here!",
+          "cacheApi": "this is where you put the key for the cacheApi"
+     },
+     "musicApi": {
+          "key": "paste the key you configured for your musicAPI here.",
+          "location": "http://ipordomain:1400/"
+     },
+     "debug": false,
+     "cacheApi": "http://ipordomain:8096/",
+     "welcomeImagesEndpoint": "http://ipordomain:4097/",
+     "uptimePingURL": "if you were to use the heartbeat feature of something like uptimerobot, you'd put that URL here.",
+     "elevated": ["600206352916414464", "this is where you put the discord ID of the users who should have elevated privileges on the bot."],
+     "prefix": ";",
+     "botDetectionWhitelist": [
+          "for nyx's built in bot detection system, you can prevent it from leaving these servers. (by discord guild ID)"
+     ]
 }

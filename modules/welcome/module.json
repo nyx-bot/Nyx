@@ -1,0 +1,6 @@
+{
+    "canSet": true,
+    "desc": "Welcome new members to your server!",
+    "extended": "Placeholders:\n> {@member} - Ping the member\n> {member} - Member's name\n> {server} - Server name\n> {membercount} - Server's member count",
+    "emoji": "happy"
+}

@@ -1,22 +1,13 @@
-# Nyx **v3**<br><sup>except they're open source</sup>
+# Nyx Rewrite
 
-welcome to the official repo of nyx v3, the source of syl's headaches.
+This is the codebase for the rewrite of Nyx, written with ~~Eris~~ Oceanic.js and a lot of energy drinks.
 
--------
+**THIS CODE IS BASICALLY A MIXTURE OF MY CURRENT KNOWLEDGE IN JAVASCRIPT AND MY KNOWLEDGE YEARS BACK. IT'S A MESS. THAT'S WHY NYX V3 IS IN DEVELOPMENT, I ONLY OPEN-SOURCED THIS FOR TRANSPARENCY AND POTENTIALLY IF PEOPLE WANTED TO SELF-HOST THEIR OWN INSTANCES.**
 
-### Updating the packages
+## Setup
 
-Considering that there is no actual one-liner way to do this, and to save myself the effort of finding it every time, I'll just throw it here.
+1) Copy `config.example.json` into `config.json` and edit accordingly.
+2) Install packages with `npm install`.
+3) Run index.js with your favorite Node.js process manager.
 
-```bash
-npm i -g npm-check-updates
-# linux: run this with sudo -- installing global packages requires elevated permissions
-
-# now run this command in the working directory of the bot:
-ncu -u
-
-# it will tell you to install the packages, since it just overwrites the package.json file:
-npm i
-```
-
-that's all lol
+Personally, I'd use [PM2](https://pm2.keymetrics.io/) to manage the instance. Nyx also fully supports their web dashboard placeholders thing or whatever it's called.

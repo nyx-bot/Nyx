@@ -1,0 +1,18 @@
+{
+    "apps":[
+    {
+        "name":"nyx",
+        "cwd":".",
+        "script":"node",
+        "autorestart":false,
+        "args":[
+            "./index.js",
+            "debug"
+        ],
+        "node_args":[],
+        "log_date_format":"",
+        "exec_interpreter":"",
+        "exec_mode":"fork"
+     }
+   ]
+}

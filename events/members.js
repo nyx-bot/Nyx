@@ -405,6 +405,6 @@ module.exports = [
     {
         event: "userUpdate",
         name: "User Updates",
-        func: guildUserUpdate
+        func: userUpdate
     },
 ];

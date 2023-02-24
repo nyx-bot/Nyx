@@ -38,8 +38,9 @@ remuteMembers = async function(guild, member, ctx) {
     } catch(e) {}
 }
 
-guildMemberAdd = async function(guild, member, ctx, meta, mObj) {
-    try {
+guildMemberAdd = async function(member, ctx, meta, mObj) {
+    let guild = member.guild;
+    if(guild) try {
         if(!member.username) try { member = await ctx.utils.resolveUser(member.id) } catch(e) {}
         if(!ctx.cache.joinLeave[guild.id]) {ctx.cache.joinLeave[guild.id] = [0, 0]};
         ctx.cache.joinLeave[guild.id][0]++;
@@ -190,8 +191,9 @@ guildMemberAdd = async function(guild, member, ctx, meta, mObj) {
     } catch(e) {}
 },
 
-guildMemberRemove = async function(guild, member, ctx, meta, mObj) {
-    if(typeof member == `object` && member.id) try {
+guildMemberRemove = async function(member, ctx, meta, mObj) {
+    let guild = member ? member.guild : null;
+    if(typeof member == `object` && member.id && guild) try {
         if(!member.username) try { member = await ctx.utils.resolveUser(member.id) } catch(e) {}
         if(!ctx.cache.joinLeave[guild.id]) {ctx.cache.joinLeave[guild.id] = [0, 0]};
         ctx.cache.joinLeave[guild.id][1]++;
@@ -235,7 +237,7 @@ guildMemberRemove = async function(guild, member, ctx, meta, mObj) {
     } catch(e) {}
 };
 
-guildUserUpdate = async function(user, oldUser, ctx, meta, mObj) {
+userUpdate = async function(user, oldUser, ctx, meta, mObj) {
     if(!user.bot) try {
         if(`${user.username}#${user.discriminator}` !== `${oldUser.username}#${oldUser.discriminator}`) {
             let embd = {
@@ -256,8 +258,8 @@ guildUserUpdate = async function(user, oldUser, ctx, meta, mObj) {
                 thumbnail: {url: user.avatarURL},
                 color: ctx.utils.colors('gold')
             };
-            let guilds = {all: []};
-            ctx.bot.guilds.forEach(guild => {if(guild.members.has(user.id)) {guilds.all.push(guild.id)}});
+            let guilds = {all: ctx.bot.guilds.filter(g => g.members.has(user.id))};
+            //ctx.bot.guilds.forEach(guild => {if(guild.members.has(user.id)) {guilds.all.push(guild.id)}});
             if(guilds.all.length !== 0) {
                 for(i in guilds.all) {
                     const g = await check(ctx, guilds.all[i], meta)
@@ -312,8 +314,9 @@ guildUserUpdate = async function(user, oldUser, ctx, meta, mObj) {
     } catch(e) {}
 }
 
-guildMemberUpdate = async function(guild, member, oldMember, ctx, meta, mObj) {
-    try {
+guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
+    let guild = member.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return;
         const webhook = JSON.parse(g.loggingchannelWebhook)

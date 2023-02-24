@@ -20,8 +20,10 @@ const voice = async (member, newc, oldc, ctx, type) => {
                     ctx.music[member.guild.id].end(1)
                 } else {
                     const time = await ctx.utils.timeConvert(ctx.music[member.guild.id].noMemberLeaveTimeout || 60000)
-                    const num = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id).length;
-                    const deafenedMembers = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && m.voiceState.selfDeaf === true).length
+                    //const num = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id).length;
+                    const num = 1
+                    //const deafenedMembers = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && m.voiceState.selfDeaf === true).length
+                    const deafenedMembers = 0
                     console.debugLog(num, deafenedMembers)
                     if(num === 0 && !ctx.music[member.guild.id].noMemberTimer && !ctx.music[member.guild.id].autoPause) {
                         console.debugLog(`there are no more members in the active channel... started a timer to disconnect`)
@@ -64,8 +66,10 @@ const voiceStateUpdate = async (member, oldState, ctx) => {
             await ctx.timeout(150);
             if(ctx.music[member.guild.id] && ctx.music[member.guild.id].channel) {
                 const time = await ctx.utils.timeConvert(ctx.music[member.guild.id].noMemberLeaveTimeout || 60000)
-                const num = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && !m.bot).length;
-                const deafenedMembers = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && m.voiceState.selfDeaf === true).length
+                //const num = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && !m.bot).length;
+                const num = 1
+                //const deafenedMembers = ctx.music[member.guild.id].channel.voiceMembers.filter(m => m.id !== ctx.bot.user.id && m.voiceState.selfDeaf === true).length
+                const deafenedMembers = 0
                 console.debugLog(num, deafenedMembers)
                 if(num === 0 && !ctx.music[member.guild.id].noMemberTimer && !ctx.music[member.guild.id].autoPause) {
                     console.debugLog(`there are no more members in the active channel... started a timer to disconnect`)

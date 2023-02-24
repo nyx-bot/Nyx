@@ -28,7 +28,7 @@ module.exports = {
         if(!person) return msg.reply(`${ctx.fail} Please mention a valid user!`);
         msg.reply({embeds: [{
             title: `${person.username}'s avatar:`,
-            description: `**[[128px]](${person.avatarURL.replace('?size=2048', `?size=128`)}) / [[256px]](${person.avatarURL.replace('?size=2048', `?size=256`)}) / [[512px]](${person.avatarURL.replace('?size=2048', `?size=512`)}) / [[1024px]](${person.avatarURL.replace('?size=2048', `?size=1024`)}) / [[2048px]](${person.avatarURL})**`,
+            description: `**[[128px]](${person.avatarURL().replace('?size=2048', `?size=128`)}) / [[256px]](${person.avatarURL().replace('?size=2048', `?size=256`)}) / [[512px]](${person.avatarURL().replace('?size=2048', `?size=512`)}) / [[1024px]](${person.avatarURL().replace('?size=2048', `?size=1024`)}) / [[2048px]](${person.avatarURL})**`,
             image: {url: `${person.avatarURL}`},
             color: ctx.utils.colors(`random`),
         }]});

@@ -37,7 +37,7 @@ inviteCreate = async function(invite, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 inviteDelete = async function(invite, ctx, meta, mObj) {
@@ -79,7 +79,7 @@ inviteDelete = async function(invite, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 module.exports = [

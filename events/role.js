@@ -28,7 +28,7 @@ guildRoleCreate = async function(role, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 guildRoleUpdate = async function(role, oldRole, ctx, meta, mObj) {
@@ -107,7 +107,7 @@ guildRoleUpdate = async function(role, oldRole, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 guildRoleDelete = async function(role, ctx, meta, mObj) {
@@ -126,7 +126,7 @@ guildRoleDelete = async function(role, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 module.exports = [

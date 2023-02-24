@@ -188,7 +188,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 },
 
 guildMemberRemove = async function(member, ctx, meta, mObj) {
@@ -234,7 +234,7 @@ guildMemberRemove = async function(member, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 };
 
 userUpdate = async function(user, oldUser, ctx, meta, mObj) {
@@ -311,7 +311,7 @@ userUpdate = async function(user, oldUser, ctx, meta, mObj) {
                 }
             }
         }
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 }
 
 guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
@@ -383,7 +383,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {}
+    } catch(e) {console.de(e)}
 };
 
 module.exports = [

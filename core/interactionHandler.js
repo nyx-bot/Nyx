@@ -72,6 +72,18 @@ module.exports = async (ctx, interaction) => {
      };
 
      interaction.reply = (...opt) => new Promise(async (res, rej) => {
+          if(opt[0] && opt[0].embed) {
+               console.d(`Message object has classic "embed property"...`)
+               if(opt[0].embeds) {
+                    console.d(`Appending embed property to existing embeds array!`)
+                    opt[0].embeds.push(opt[0].embed);
+               } else {
+                    console.d(`Creating embeds array!`)
+                    opt[0].embeds = [opt[0].embed]
+               }
+               delete opt[0].embed;
+          };
+
           //interaction.acknowledged = true;
           console.d(`reply called, ${interaction.acknowledged ? `editing` : `creating first message`} (${typeof interaction.acknowledged} / ${interaction.type})`)
           // acknowledges: acknowledge, createMessage, defer
@@ -88,11 +100,11 @@ module.exports = async (ctx, interaction) => {
           });
 
           const originalMessageExists = (flags) => new Promise(async res => {
-               try {
+               /*try {
                     await interaction.defer(flags ? flags : undefined)
                } catch(e) {
                     return res(false)
-               }
+               }*/
 
                interaction.getOriginal().then(msg => {
                     console.d(`ORIGINAL EXISTS`)

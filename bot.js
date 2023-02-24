@@ -296,7 +296,9 @@ core.initCommands(ctx).then(c => {
                                                   g.guildSetting = settings.toJSON();
                                              };
                                         } catch(e) {console.de(e)}
-                                        setTimeout(() => r(), 1)
+                                        if(i % 50 === 0) {
+                                             setTimeout(() => r(), 1)
+                                        } else r()
                                         // this uses a timeout so it doesn't kill the cpu and prevents the bot from disconnecting from discord's api
                                    });
 

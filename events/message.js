@@ -75,7 +75,7 @@ messageDelete = async function(message, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 messageUpdate = async function(message, oldMessage, ctx, meta, mObj) {
@@ -117,7 +117,7 @@ messageUpdate = async function(message, oldMessage, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 messageDeleteBulk = async function(messages, ctx, meta, mObj) {
@@ -137,7 +137,7 @@ messageDeleteBulk = async function(messages, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 messageReactionRemoveAll = async function(message, ctx, meta, mObj) {
@@ -157,7 +157,7 @@ messageReactionRemoveAll = async function(message, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 module.exports = [

@@ -188,11 +188,10 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 },
 
-guildMemberRemove = async function(member, ctx, meta, mObj) {
-    let guild = member ? member.guild : null;
+guildMemberRemove = async function(member, guild, ctx, meta, mObj) {
     if(typeof member == `object` && member.id && guild) try {
         if(!member.username) try { member = await ctx.utils.resolveUser(member.id) } catch(e) {}
         if(!ctx.cache.joinLeave[guild.id]) {ctx.cache.joinLeave[guild.id] = [0, 0]};
@@ -234,7 +233,7 @@ guildMemberRemove = async function(member, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 };
 
 userUpdate = async function(user, oldUser, ctx, meta, mObj) {
@@ -311,7 +310,7 @@ userUpdate = async function(user, oldUser, ctx, meta, mObj) {
                 }
             }
         }
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
@@ -321,7 +320,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
         if(!g) return;
         const webhook = JSON.parse(g.loggingchannelWebhook)
         let embd;
-        if(oldMember.roles.length !== member.roles.length) {let key = `Added`; let suffix = ``; let key2 = ``
+        if(oldMember && oldMember.roles && oldMember.roles.length !== member.roles.length) {let key = `Added`; let suffix = ``; let key2 = ``
             let diff = oldMember.roles.length - member.roles.length
             if(diff > 0) {key = `Removed!`; key2 = `from`} else {key = `Added!`; key2 = `to`}; if(diff === 1 || diff === -1) {suffix = `s`}
             embd = {
@@ -358,7 +357,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
                     inline: true,
                 })
             }
-        } else if(oldMember.nick !== member.nick) {
+        } else if(oldMember && oldMember.nick !== member.nick) {
             embd = {
                 title: `Member Nickname Changed!`,
                 description: `${member.username}#${member.discriminator} (<@${member.id}>)`,
@@ -383,7 +382,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 };
 
 module.exports = [

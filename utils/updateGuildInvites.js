@@ -94,7 +94,7 @@ module.exports = ({ ctx, id, invite, purge }) => new Promise(async res => {
     } else {
         const guild = await ctx.utils.lookupGuildOrCreate(ctx, id, true);
 
-        const invitesArray = await ctx.bot.getGuildInvites(id);
+        const invitesArray = await ctx.bot.guilds.get(id).getInvites();
 
         const changes = parseChanges(JSON.parse(guild.loggingInvitesArray), [...invitesArray, ...(recentInviteCreations[id] || [])])
     

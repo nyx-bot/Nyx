@@ -2,7 +2,7 @@
 async function check(ctx, guild, meta) { const g = await ctx.utils.lookupGuild(ctx, guild); if(g && g.logging === true && g.loggingchannelID !== null && g[`logging${meta}`] !== false && g.loggingchannelWebhook !== `{}`) {return g} else {return false} }
 
 inviteCreate = async function(invite, ctx, meta, mObj) {
-    let guild = invite.guild;
+    let guild = invite.channel.guild;
     if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return ctx.utils.updateGuildInvites({ctx, id: guild.id, purge: true})
@@ -37,11 +37,11 @@ inviteCreate = async function(invite, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 inviteDelete = async function(invite, ctx, meta, mObj) {
-    let guild = invite.guild;
+    let guild = invite.channel.guild;
     if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return ctx.utils.updateGuildInvites({ctx, id: guild.id, purge: true})
@@ -79,7 +79,7 @@ inviteDelete = async function(invite, ctx, meta, mObj) {
             avatarURL: mObj.icon, 
             username: mObj.name
         }).catch(e => {})
-    } catch(e) {console.de(e)}
+    } catch(e) {}
 }
 
 module.exports = [

@@ -1,8 +1,9 @@
 // everything includes event stuff, ctx, and meta.
 async function check(ctx, guild, meta) { const g = await ctx.utils.lookupGuild(ctx, guild); if(g && g.logging === true && g.loggingchannelID !== null && g[`logging${meta}`] !== false && g.loggingchannelWebhook !== `{}`) {return g} else {return false} }
 
-inviteCreate = async function(guild, invite, ctx, meta, mObj) {
-    try {
+inviteCreate = async function(invite, ctx, meta, mObj) {
+    let guild = invite.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return ctx.utils.updateGuildInvites({ctx, id: guild.id, purge: true})
         ctx.utils.updateGuildInvites({ctx, id: guild.id, invite})
@@ -39,8 +40,9 @@ inviteCreate = async function(guild, invite, ctx, meta, mObj) {
     } catch(e) {}
 }
 
-inviteDelete = async function(guild, invite, ctx, meta, mObj) {
-    try {
+inviteDelete = async function(invite, ctx, meta, mObj) {
+    let guild = invite.guild;
+    if(guild) try {
         const g = await check(ctx, guild.id, meta)
         if(!g) return ctx.utils.updateGuildInvites({ctx, id: guild.id, purge: true})
         ctx.utils.updateGuildInvites({ctx, id: guild.id})

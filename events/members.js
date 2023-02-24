@@ -64,6 +64,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                 let msgs = JSON.parse(guildSetting.welcomeMsg);
     
                 const standardWelcomeMessage = async () => {
+                    console.d(`Falling back to standard welcome messages`)
                     if(msgs.length !== 0) try {
                         await channel.createMessage({
                             content: msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}#${member.discriminator}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`),
@@ -79,6 +80,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                         console.d(`successfuly searched background!`)
                         const thisServer = ids.find(i => i.startsWith(guild.id))
                         if(thisServer) {
+                            console.d(`FOUND IMAGE FOR WELCOME IMAGE`)
                             require('fs').readFile(`./etc/backgrounds/${thisServer}`, (e, buffer) => {
                                 if(e) {
                                     console.error(e);
@@ -87,7 +89,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
 
                                 let payload = {
                                     name: `${member.username}#${member.discriminator}`,
-                                    url: member.avatarURL.split(`size=`)[0] + `size=256`,
+                                    url: member.avatarURL().split(`size=`)[0] + `size=256`,
                                     message: guildSetting.welcomeImgMsg.length > 0 ? guildSetting.welcomeImgMsg : null,
                                     image: true
                                 };
@@ -113,12 +115,16 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
 
                                     if(msgs.length > 0) content.content = msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}#${member.discriminator}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`);
 
-                                    console.d(content)
+                                    content.files = [
+                                        {
+                                            name: `welcome-${member.id}.${res.headers[`content-type`].split(`/`)[1]}`,
+                                            contents: r
+                                        }
+                                    ];
 
-                                    channel.createMessage(content, {
-                                        name: `welcome-${member.id}.${res.headers[`content-type`].split(`/`)[1]}`,
-                                        file: r
-                                    });
+                                    //console.d(content)
+
+                                    channel.createMessage(content);
                                 }).catch(console.error)
                             })
                         } else standardWelcomeMessage()
@@ -180,7 +186,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
             title: `Member Joined!`,
             description: `${member.username}#${member.discriminator} (<@${member.id}>)`,
             fields,
-            thumbnail: {url: member.avatarURL},
+            thumbnail: {url: member.avatarURL()},
             color: ctx.utils.colors('green')
         };
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
@@ -225,7 +231,7 @@ guildMemberRemove = async function(member, guild, ctx, meta, mObj) {
                     inline: true,
                 },
             ],
-            thumbnail: {url: member.avatarURL},
+            thumbnail: {url: member.avatarURL()},
             color: ctx.utils.colors('red')
         };
         ctx.bot.rest.webhooks.execute(webhook.id, webhook.token, {
@@ -326,7 +332,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
             embd = {
                 title: `Member Role${suffix} ${key}`,
                 description: `Roles **${key.replace('!', '')}** ${key2} ${member.username}#${member.discriminator} (<@${member.id}>)`,
-                thumbnail: {url: member.avatarURL},
+                thumbnail: {url: member.avatarURL()},
                 color: ctx.utils.colors('gold')
             };
             let addedRoles = [];
@@ -373,7 +379,7 @@ guildMemberUpdate = async function(member, oldMember, ctx, meta, mObj) {
                         inline: true
                     },
                 ],
-                thumbnail: {url: member.avatarURL},
+                thumbnail: {url: member.avatarURL()},
                 color: ctx.utils.colors('gold')
             };
         }

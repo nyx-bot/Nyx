@@ -71,137 +71,129 @@ module.exports = async (ctx, interaction) => {
           }
      };
 
-     interaction.reply = (...opt) => new Promise(async (res, rej) => {
-          if(opt[0] && opt[0].embed) {
-               console.d(`Message object has classic "embed property"...`)
-               if(opt[0].embeds) {
-                    console.d(`Appending embed property to existing embeds array!`)
-                    opt[0].embeds.push(opt[0].embed);
-               } else {
-                    console.d(`Creating embeds array!`)
-                    opt[0].embeds = [opt[0].embed]
-               }
-               delete opt[0].embed;
-          };
-
-          //interaction.acknowledged = true;
-          console.d(`reply called, ${interaction.acknowledged ? `editing` : `creating first message`} (${typeof interaction.acknowledged} / ${interaction.type})`)
-          // acknowledges: acknowledge, createMessage, defer
-          // not ack: createFollowup, deleteMessage, deleteOriginalMessage, editMessage, editOriginal
-
-          if(typeof opt[0] == `string`) opt[0] = {content: opt[0]}
-
-          let editReply = (...opt) => new Promise(async (res, rej) => {
-               interaction.editOriginal(...opt).then(async () => {
-                    let o = await interaction.getOriginal()
-                    o.edit = (...o2) => editReply(...o2); 
-                    res(o)
-               }).catch(rej)
-          });
-
-          const originalMessageExists = (flags) => new Promise(async res => {
-               /*try {
-                    await interaction.defer(flags ? flags : undefined)
-               } catch(e) {
-                    return res(false)
-               }*/
-
-               interaction.getOriginal().then(msg => {
-                    console.d(`ORIGINAL EXISTS`)
-                    if(msg.id) {
-                         res(true)
-                    } else {
-                         console.d(`...but no msg id was found`)
-                         res(false)
-                    }
-               }).catch(e => {
-                    console.warn(`ORIGINAL DOES NOT EXIST; ERROR: ${e}`)
-                    res(false)
-               })
-          })
-
-          if(interaction.type === 3) {
-               if(opt[0]) {
-                    opt[0].flags = 64
-               }
-               if(opt[0] && opt[0].flags) {
-                    const exists = typeof interaction.acknowledged == `boolean` ? interaction.acknowledged : await originalMessageExists(opt[0].flags)
-
-                    return interaction[exists ? `createFollowup` : `createMessage`](...opt).then(o => {
-                         interaction.getOriginal().then(o2 => {
-                              o2.edit = (...content) => editReply(...content)
-                              res(o2)
-                         }).catch(rej)
+     interaction.reply = function reply(...content) {
+          return new Promise(async (res, rej) => {
+               let opt = ctx.core.parseReplyContent({msg: interaction, content});
+     
+               //interaction.acknowledged = true;
+               console.d(`reply called, ${interaction.acknowledged ? `editing` : `creating first message`} (${typeof interaction.acknowledged} / ${interaction.type})`)
+               // acknowledges: acknowledge, createMessage, defer
+               // not ack: createFollowup, deleteMessage, deleteOriginalMessage, editMessage, editOriginal
+     
+               let editReply = (...opt) => new Promise(async (res, rej) => {
+                    interaction.editOriginal(ctx.core.parseReplyContent({msg: interaction, content: opt})).then(async () => {
+                         let o = await interaction.getOriginal()
+                         o.edit = (...o2) => editReply(...o2); 
+                         res(o)
+                    }).catch(rej)
+               });
+     
+               console.log(content)
+     
+               const originalMessageExists = (flags) => new Promise(async res => {
+                    /*try {
+                         await interaction.defer(flags ? flags : undefined)
+                    } catch(e) {
+                         return res(false)
+                    }*/
+     
+                    interaction.getOriginal().then(msg => {
+                         console.d(`ORIGINAL EXISTS`)
+                         if(msg.id) {
+                              res(true)
+                         } else {
+                              console.d(`...but no msg id was found`)
+                              res(false)
+                         }
                     }).catch(e => {
-                         if(exists) {
-                              return interaction.editOriginal(...opt).then(o => {
+                         console.warn(`ORIGINAL DOES NOT EXIST; ERROR: ${e}`)
+                         res(false)
+                    })
+               })
+     
+               if(interaction.type === 3) {
+                    if(opt[0]) {
+                         opt[0].flags = 64
+                    }
+                    if(opt[0] && opt[0].flags) {
+                         const exists = typeof interaction.acknowledged == `boolean` ? interaction.acknowledged : await originalMessageExists(opt[0].flags)
+     
+                         return interaction[exists ? `createFollowup` : `createMessage`](...opt).then(o => {
+                              interaction.getOriginal().then(o2 => {
+                                   o2.edit = (...content) => editReply(...content)
+                                   res(o2)
+                              }).catch(rej)
+                         }).catch(e => {
+                              if(exists) {
+                                   return interaction.editOriginal(...opt).then(o => {
+                                        interaction.getOriginal().then(o2 => {
+                                             o2.edit = (...content) => editReply(...content)
+                                             res(o2)
+                                        }).catch(rej)
+                                   }).catch(rej)
+                              } else rej(e)
+                         })
+                    } else {
+                         const exists = typeof interaction.acknowledged == `boolean` ? interaction.acknowledged : await originalMessageExists()
+     
+                         /*await interaction.defer();
+     
+                         const exists = await originalMessageExists()*/
+     
+                         return interaction.editOriginal(...opt).then(o => {
+                              interaction.getOriginal().then(o2 => {
+                                   o2.edit = (...content) => editReply(...content)
+                                   res(o2)
+                              }).catch(rej)
+                         }).catch(e => {
+                              console.warn(`${e}`)
+                              return interaction.createFollowup(...opt).then(o => {
                                    interaction.getOriginal().then(o2 => {
                                         o2.edit = (...content) => editReply(...content)
                                         res(o2)
                                    }).catch(rej)
                               }).catch(rej)
-                         } else rej(e)
-                    })
+                         })
+                    }
                } else {
                     const exists = typeof interaction.acknowledged == `boolean` ? interaction.acknowledged : await originalMessageExists()
-
-                    /*await interaction.defer();
-
-                    const exists = await originalMessageExists()*/
-
-                    return interaction.editOriginal(...opt).then(o => {
-                         interaction.getOriginal().then(o2 => {
-                              o2.edit = (...content) => editReply(...content)
-                              res(o2)
-                         }).catch(rej)
-                    }).catch(e => {
-                         console.warn(`${e}`)
-                         return interaction.createFollowup(...opt).then(o => {
+     
+                    if(exists) {
+                         return interaction.editOriginal(...opt).then(o => {
                               interaction.getOriginal().then(o2 => {
                                    o2.edit = (...content) => editReply(...content)
                                    res(o2)
                               }).catch(rej)
-                         }).catch(rej)
-                    })
-               }
-          } else {
-               const exists = typeof interaction.acknowledged == `boolean` ? interaction.acknowledged : await originalMessageExists()
-
-               if(exists) {
-                    return interaction.editOriginal(...opt).then(o => {
-                         interaction.getOriginal().then(o2 => {
-                              o2.edit = (...content) => editReply(...content)
-                              res(o2)
-                         }).catch(rej)
-                    }).catch(e => {
-                         console.warn(`${e}`)
-                         return interaction.createFollowup(...opt).then(o => {
-                              interaction.getOriginal().then(o2 => {
-                                   o2.edit = (...content) => editReply(...content)
-                                   res(o2)
-                              }).catch(rej)
-                         }).catch(rej)
-                    })
-               } else {
-                    return interaction.createMessage(...opt).then(o => {
-                         interaction.getOriginal().then(o2 => {
-                              o2.edit = (...content) => editReply(...content)
-                              res(o2)
-                         }).catch(rej)
-                    }).catch(e => {
-                         console.warn(`${e}`)
-                         if(`${e}`.toLowerCase().includes(`already been acknowledged`)) {
-                              return interaction.editOriginal(...opt).then(o => {
+                         }).catch(e => {
+                              console.warn(`${e}`)
+                              return interaction.createFollowup(...opt).then(o => {
                                    interaction.getOriginal().then(o2 => {
                                         o2.edit = (...content) => editReply(...content)
                                         res(o2)
                                    }).catch(rej)
                               }).catch(rej)
-                         } else rej(e)
-                    })
+                         })
+                    } else {
+                         return interaction.createMessage(...opt).then(o => {
+                              interaction.getOriginal().then(o2 => {
+                                   o2.edit = (...content) => editReply(...content)
+                                   res(o2)
+                              }).catch(rej)
+                         }).catch(e => {
+                              console.warn(`${e}`)
+                              if(`${e}`.toLowerCase().includes(`already been acknowledged`)) {
+                                   return interaction.editOriginal(...opt).then(o => {
+                                        interaction.getOriginal().then(o2 => {
+                                             o2.edit = (...content) => editReply(...content)
+                                             res(o2)
+                                        }).catch(rej)
+                                   }).catch(rej)
+                              } else rej(e)
+                         })
+                    }
                }
-          }
-     })
+          })
+     }
 
      interaction.channel.createMessage = (...opt) => ctx.utils.createMessage(ctx, interaction, false, ...opt);
 

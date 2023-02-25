@@ -256,7 +256,7 @@ const getStreamLegacy = (ctx, np, waitForReadable, addToCache) => new Promise(as
     } else return(rej(null))
 });
 
-const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, rej) => {
+const fetchFromApi = (ctx, msg2, link, msg, source, object) => new Promise(async (res, rej) => {
     try {
         console.d(`FETCHING A RESULT FROM API!!`)
         let location = `${ctx.musicApi.location}getInfo/${link}`;
@@ -267,9 +267,13 @@ const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, r
     
                 if(info.entries.length === 0) {
                     if(info.entries.length !== origInfoEntries) {
-                        return msg2.edit(`${ctx.fail} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (All songs in this playlist are longer than ${(await ctx.utils.timeConvert(msg.author.maxtime))}!)`)
+                        return msg2.edit({
+                            content: `${ctx.fail} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (All songs in this playlist are longer than ${(await ctx.utils.timeConvert(msg.author.maxtime))}!)`
+                        })
                     } else if(info.entries.filter(song => !song.duration || song.duration.timestamp != `--:--`).length == 0) {
-                        return msg2.edit(`${ctx.fail} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (There were no parsable entries in this playlist!)`)
+                        return msg2.edit({
+                            content: `${ctx.fail} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (There were no parsable entries in this playlist!)`
+                        })
                     }
                 };
     
@@ -304,7 +308,7 @@ const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, r
         
                 let pos = await ctx.music[msg.channel.guild.id].addTrack(np)
                 
-                res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`]} **"${info.title}"** \`[${info.duration && info.duration.timestamp ? info.duration.timestamp : ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` with ${info.entries.length} song${info.entries.length === 1 ? `` : `s`} to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
+                res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`] || ctx.file} **"${info.title}"** \`[${info.duration && info.duration.timestamp ? info.duration.timestamp : ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` with ${info.entries.length} song${info.entries.length === 1 ? `` : `s`} to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
                     url: ctx.music[msg.channel.guild.id].queue[pos][2],
                     icon: thumbnailUrl,
                     title: `${info.title} [${info.entries.length} song${info.entries.length === 1 ? `` : `s`}]`,
@@ -332,14 +336,16 @@ const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, r
             
                     let pos = await ctx.music[msg.channel.guild.id].addTrack(np)
                     
-                    res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`]} **"${ctx.music[msg.channel.guild.id].queue[pos][0]}"** \`[${info && info.duration && info.duration.timestamp ? info.duration.timestamp : ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
+                    res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`] || ctx.file} **"${ctx.music[msg.channel.guild.id].queue[pos][0]}"** \`[${info && info.duration && info.duration.timestamp ? info.duration.timestamp : ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
                         url: ctx.music[msg.channel.guild.id].queue[pos][2],
                         icon: ctx.music[msg.channel.guild.id].queue[pos][4],
                         title: ctx.music[msg.channel.guild.id].queue[pos][0],
                         username: ctx.bot.users.get(ctx.music[msg.channel.guild.id].queue[pos][3]).username
                     })))
                 } else {
-                    if(info.duration.units.ms > msg.author.maxtime) return msg2.edit(`${ctx.fail} ${ctx[source || `file`]} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (You can't play songs longer than ${(await ctx.utils.timeConvert(msg.author.maxtime))})`)
+                    if(info.duration.units.ms > msg.author.maxtime) return msg2.edit({
+                        content: `${ctx.fail} ${ctx[source || `file`] || ctx.file} I was unable to add ${ctx.utils.escapeDiscordsFuckingEditing(info.title)}! (You can't play songs longer than ${(await ctx.utils.timeConvert(msg.author.maxtime))})`
+                    })
                     // MUSIC SHIT
                     let thumbnailUrl = info.thumbnail.url
                     try {
@@ -363,7 +369,7 @@ const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, r
             
                     let pos = await ctx.music[msg.channel.guild.id].addTrack(np)
                     
-                    res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`]} **"${ctx.music[msg.channel.guild.id].queue[pos][0]}"** \`[${ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
+                    res(await msg2.edit(await ctx.utils.music.getMusicCard(ctx, `${msg2.content} added ${ctx[source || `file`] || ctx.file} **"${ctx.music[msg.channel.guild.id].queue[pos][0]}"** \`[${ctx.utils.timestampConvert(ctx.music[msg.channel.guild.id].queue[pos][1][0] || ctx.music[msg.channel.guild.id].queue[pos][1])}]\` to the queue, starting ${pos === 0 ? `**now**` : pos === 1 ? `**after this song**` : `at position **${pos}**`}!`, {
                         url: ctx.music[msg.channel.guild.id].queue[pos][2],
                         icon: ctx.music[msg.channel.guild.id].queue[pos][4],
                         title: ctx.music[msg.channel.guild.id].queue[pos][0],
@@ -374,18 +380,26 @@ const fetchFromApi = (ctx, msg2, link, msg, source) => new Promise(async (res, r
         }
     
         const origMessage = msg2.content
-    
-        require('superagent').get(location).set(`auth`, ctx.musicApi.key).then(r => r.body).then(parse).catch(async e => {
+
+        if(object) {
+            parse(object)
+        } else require('superagent').get(location).set(`auth`, ctx.musicApi.key).then(r => r.body).then(parse).catch(async e => {
             console.error(`${e}`);
             location = `${ctx.musicApi.location}getInfo/${link}`;
-            await msg2.edit(msg2.content + ` (still trying...)`)
+            await msg2.edit({
+                content: msg2.content + ` (still trying...)`
+            })
             require('superagent').get(location).set(`auth`, ctx.musicApi.key).then(r => r.body).then(parse).catch(async e => {
                 console.error(`${e}`);
                 location = `${ctx.musicApi.location}getInfo/${link}`;
-                await msg2.edit(msg2.content + ` (***still*** trying...)`)
+                await msg2.edit({
+                    content: msg2.content + ` (***still*** trying...)`
+                })
                 require('superagent').get(location).set(`auth`, ctx.musicApi.key).then(r => r.body).then(parse).catch(async e => {
                     console.error(e);
-                    return msg2.edit(`${ctx.fail} I was unable to add \`${ctx.utils.escapeDiscordsFuckingEditing(origMessage.split(`\``).slice(1, -1).join(`\``))}\`! (This media source is likely not supported!)`)
+                    return msg2.edit({
+                        content: `${ctx.fail} I was unable to add \`${ctx.utils.escapeDiscordsFuckingEditing(origMessage.split(`\``).slice(1, -1).join(`\``))}\`! (This media source is likely not supported!)`
+                    })
                 })
             })
         })
@@ -673,7 +687,7 @@ async function nowPlayingFunc(ctx, msg, type) {
                     name: `🔁`,
                     id: null,
                 },
-                label: `Repeat`,
+                label: `Loop`,
                 customID: "loop-queue",
                 disabled: ctx.music[msg.channel.guild.id].singleLoop == true ? true : false,
             },
@@ -684,7 +698,7 @@ async function nowPlayingFunc(ctx, msg, type) {
                     name: `🔂`,
                     id: null,
                 },
-                label: `Repeat song`,
+                label: `Loop song`,
                 customID: "loop-song",
                 disabled: false,
             },
@@ -696,11 +710,23 @@ async function nowPlayingFunc(ctx, msg, type) {
                     name: `🔀`,
                     id: null,
                 },
-                label: `Shuffle queue`,
+                label: `Shuffle`,
                 customID: "shuffle",
                 disabled: false,
             },
-        ]
+            {
+                type: 2,
+                style: 2,
+                emoji: {
+                    name: ctx.yt.split(`:`).slice(1,2)[0],
+                    id: ctx.yt.split(`:`)[2].split(`>`)[0],
+                    animated: false,
+                },
+                label: `Mix`,
+                customID: "ytmix",
+                disabled: false
+            }
+        ];
 
         let np = ctx.music[msg.channel.guild.id].queue[0];
         if(!np) {
@@ -840,6 +866,16 @@ async function nowPlayingFunc(ctx, msg, type) {
                         //    progbar = (`=`.repeat(amt) + `-`.repeat(20 - amt)).split('')
                         //} else {progbar = `====================`.split('')}
                         progbar = `====================`.split('')
+                        
+                        if(!np.waveform) {
+                            np.waveform = [3,4,6,8,6,4,3,2,3,4,6,8,6,4,3].map(n => (n/8)*100)
+                            require('superagent').get(`${ctx.musicApi.location}waveform/${np[2]}`).set(`auth`, ctx.musicApi.key).then(r => r.body).then(r => {
+                                if(r && r.data) {
+                                    //console.log(`MusicAPI gave waveform response!`, r)
+                                    np.waveform = r.data;
+                                } else console.error(r)
+                            }).catch(console.error)
+                        }
 
                         if(np.waveform && typeof np.waveform == `object`) {
                             progbar = np.waveform.map(o => {
@@ -869,13 +905,6 @@ async function nowPlayingFunc(ctx, msg, type) {
                             });
 
                             console.d(`New progressbar: [${progbar.join(``)}]`)
-                        } else if(!np.waveform) {
-                            require('superagent').get(`${ctx.musicApi.location}waveform/${np[2]}`).set(`auth`, ctx.musicApi.key).then(r => r.body).then(r => {
-                                if(r && r.data) {
-                                    //console.log(`MusicAPI gave waveform response!`, r)
-                                    np.waveform = r.data;
-                                } else console.error(r)
-                            }).catch(console.error)
                         }
 
                         progbar.splice(Math.round(seek/5)-1, 1, `🔘`)

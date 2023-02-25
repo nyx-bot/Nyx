@@ -15,7 +15,7 @@ module.exports = {
 
         const m = await msg.reply(`${ctx.processing} Creating ${ctx.yt} Mix...`);
 
-        require(`superagent`).get(ctx.config.musicApi.location + `createYoutubeMix/${ctx.music[msg.channel.guild.id].queue[0][2]}`).then(r => {
+        require(`superagent`).get(ctx.config.musicApi.location + `createYoutubeMix/${ctx.music[msg.channel.guild.id].queue[0][2]}`).set(`authorization`, ctx.config.musicApi.key).then(r => {
             console.d(r.body);
 
             if(msg.type == 3) {

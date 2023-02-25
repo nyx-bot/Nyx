@@ -714,19 +714,22 @@ async function nowPlayingFunc(ctx, msg, type) {
                 customID: "shuffle",
                 disabled: false,
             },
+        ];
+
+        let buttons3 = [
             {
                 type: 2,
-                style: 2,
+                style: 4,
                 emoji: {
                     name: ctx.yt.split(`:`).slice(1,2)[0],
                     id: ctx.yt.split(`:`)[2].split(`>`)[0],
                     animated: false,
                 },
-                label: `Mix`,
+                label: `Create YouTube Mix`,
                 customID: "ytmix",
-                disabled: false
+                disabled: ctx.music[msg.channel.guild.id] && ctx.music[msg.channel.guild.id].queue && ctx.music[msg.channel.guild.id].queue[0] && ctx.music[msg.channel.guild.id].queue[0][2] ? false : true
             }
-        ];
+        ]
 
         let np = ctx.music[msg.channel.guild.id].queue[0];
         if(!np) {
@@ -749,6 +752,10 @@ async function nowPlayingFunc(ctx, msg, type) {
                             type: 1,
                             components: buttons2//.map(b => b.disabled = true)
                         },
+                        {
+                            type: 1,
+                            components: buttons3//.map(b => b.disabled = true)
+                        },
                     ],
                 })
             } else if(!obj) {
@@ -766,6 +773,10 @@ async function nowPlayingFunc(ctx, msg, type) {
                         {
                             type: 1,
                             components: buttons2//.map(b => b.disabled = true)
+                        },
+                        {
+                            type: 1,
+                            components: buttons3//.map(b => b.disabled = true)
                         },
                     ],
                 });
@@ -786,6 +797,10 @@ async function nowPlayingFunc(ctx, msg, type) {
                         {
                             type: 1,
                             components: buttons2//.map(b => b.disabled = true)
+                        },
+                        {
+                            type: 1,
+                            components: buttons3//.map(b => b.disabled = true)
                         },
                     ],
                 })
@@ -976,6 +991,10 @@ async function nowPlayingFunc(ctx, msg, type) {
                             {
                                 type: 1,
                                 components: buttons2
+                            },
+                            {
+                                type: 1,
+                                components: buttons3
                             },
                         ],
                     };

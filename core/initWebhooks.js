@@ -135,37 +135,6 @@ module.exports = (ctx) => new Promise(async(resolve, rej) => {
           serversPerShard: ctx.bot.shards.map(s => ctx.bot.guilds.filter(g => g.shard.id == s.id).length)
      }));
 
-     app.get(`/registerMusicAPI`, (req, res) => {
-          const ip = (req.headers[`CF-Connecting-IP`] || req.headers[`cf-connecting-ip`] || req.headers['x-forwarded-for'] || req.ip).replace(`::ffff:`, ``)
-          console.d(`${ip} registered musicAPI session!`);
-          ctx.musicApi.pendingServers.push(`http://${ip}:1366/`);
-          res.send({
-               error: false,
-               message: `Registered!`
-          })
-     })
-
-     app.get(`/unregisterMusicAPI`, (req, res) => {
-          const ip = (req.headers[`CF-Connecting-IP`] || req.headers[`cf-connecting-ip`] || req.headers['x-forwarded-for'] || req.ip).replace(`::ffff:`, ``)
-          console.d(`${ip} requested to REMOVE its musicAPI instance`);
-          
-          const pending = ctx.musicApi.pendingServers.indexOf(`http://${ip}:1366/`);
-          const existing = ctx.musicApi.locations.indexOf(`http://${ip}:1366/`);
-
-          if(pending !== -1) {
-               ctx.musicApi.pendingServers.splice(pending, 1);
-               console.d(`Removed pending entry ${pending}`)
-          }; if(existing !== -1) {
-               ctx.musicApi.locations.splice(existing, 1);
-               console.d(`Removed existing entry ${existing}`)
-          };
-
-          res.send({
-               removedFromPending: pending === -1 ? false : true,
-               removedFromExisting: existing === -1 ? false : true,
-          });
-     });
-
      app.get(`/background/:id`, require('express').json(), async (req, res) => {
           fs.readdir(__dirname.split(`/`).slice(0, -1).join(`/`) + `/etc/backgrounds/`, async (e, ids) => {
                if(e) {
@@ -192,7 +161,7 @@ module.exports = (ctx) => new Promise(async(resolve, rej) => {
           if(u) {return `${u.username}#${u.discriminator}`} else {return null;}
      };
 
-     app.post('/set/:id/:uid', require('express').json(), async (req, res) => {
+     /*app.post('/set/:id/:uid', require('express').json(), async (req, res) => {
           let fail = false;
           const uid = req.params.uid, id = req.params.id, guild = (ctx.bot.guilds.get(id))
           let name;
@@ -511,7 +480,7 @@ module.exports = (ctx) => new Promise(async(resolve, rej) => {
                }
           };
           res.send({guilds: gs, sent: guilds.length, finished: gs.length})
-     })
+     })*/
 
      app.use((req, res, next) => {
           let createRespObj = (data, error) => {

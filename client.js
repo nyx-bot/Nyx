@@ -1,3 +1,6 @@
+process.on(`uncaughtException`, console.error)
+process.on(`unhandledRejection`, console.error)
+
 require(`./core/client/initialize`)().then(async () => {    
     ctx.bot.on(`ready`, () => {
         console.log(`bot marked as ready!`)
@@ -14,9 +17,9 @@ require(`./core/client/initialize`)().then(async () => {
             i.reply({
                 content: `${ctx.emoji.fail} There was an issue while trying to run this command. Please try again later!\n\nIf this continues to happen, please make sure to report this to the developers at **https://nyx.bot/server**!`,
                 ephemeral: true,
-            })
+            }).catch(e => console.error(`Failed sending error message! ${e}`))
         }
     })
 
-    ctx.bot.login();
+    ctx.bot.connect();
 })

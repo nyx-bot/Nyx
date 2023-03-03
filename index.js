@@ -1,3 +1,5 @@
+const cp = require(`child_process`)
+
 const logger = require('./core/cluster/logger');
 global.errorHandler = require(`./core/errorHandler`);
 
@@ -6,41 +8,54 @@ process.on(`unhandledRejection`, errorHandler)
 
 const config = require('./config.json');
 
-const { ClusterManager } = require('discord.js-cluster');
+require('./core/cluster/createSlashCommands')(config).then(async cmds => {
+    let nyx, keepActive = true;
 
-global.manager = new ClusterManager(`./client.js`, {
-    token: config.token,
-});
+    let exitCount = 0;
+    
+    const exitFunc = (code) => {
+        exitCount++;
+        console.debug(`Process exit called! (code: ${code})`);
 
-require('./core/cluster/createSlashCommands')().then(async cmds => {
-    manager.on(`clusterCreate`, async cluster => {
-        console.log(`Launched cluster ${Number(cluster.id)+1}`);
+        if(exitCount >= 4) {
+            console.warn(`Killing process.`)
+        } else {
+            keepActive = false;
+            if(nyx && nyx.kill) nyx.kill(`SIGINT`);
+        }
+    }
     
-        cluster.on(`error`, e => {
-            console.error(`--`, e)
-        })
+    process.on('beforeExit', exitFunc)
+    process.on('exit', exitFunc)
+    process.on('SIGINT', exitFunc)
+    process.on('SIGTERM', exitFunc)
+    process.on('SIGUSR1', exitFunc)
+    process.on('SIGUSR2', exitFunc)
+
+    let startCount = 1
+
+    while(keepActive) await new Promise(async restart => {
+        console.log(`Starting Nyx! (#${startCount++})`)
+
+        nyx = cp.fork(`./client.js`);
     
-        cluster.on(`message`, opt => {
+        nyx.on(`message`, opt => {
             try {
                 if(logger[opt.name]) {
                     if(opt.name.toLowerCase() == `error` && errorHandler.find(opt.msg)) {
                         errorHandler(opt.msg)
-                    } else logger[opt.name](Number(cluster.id)+1, opt.msg)
+                    } else logger[opt.name](startCount, opt.msg)
                 }
             } catch(e) {console.error(e)}
         })
-    
-        cluster.on(`ready`, async () => {
-            console.log(`Cluster ${Number(cluster.id)+1}/${manager.totalClusters} is ready!`);
-            if(Number(cluster.id)+1 == manager.totalClusters) {
-                console.log(`| Nyx is ready!\n| Serving ${(await (require('./util/getTotalServerCount')()))} guilds across ${manager.totalShards} shards & ${manager.totalClusters} clusters`)
-            }
+
+        nyx.on(`error`, e => {
+            console.error(`Error occurred while forking client process!`, e)
+        });
+        
+        nyx.once(`close`, (code, signal) => {
+            console.log(`Client process closed ${code ? `with code ${code}` : `with signal ${signal}`}`);
+            restart()
         })
-    });
-    
-    try {
-        manager.spawn();
-    } catch(e) {
-        console.error(`--`, `Failed to spawn cluster: ${e}`);
-    }
+    })
 }).catch(errorHandler)

@@ -1,9 +1,10 @@
 const fs = require('fs'), readCommand = require(`../readCommand`)
-const { REST, Routes } = require('discord.js')
 
-const { SlashCommandBuilder } = require('discord.js')
+const { Client } = require(`oceanic.js`);
 
-module.exports = () => new Promise(async (res, rej) => {
+const { SlashCommandBuilder } = require(`@discordjs/builders`)
+
+module.exports = (config) => new Promise(async (res, rej) => {
     try {
         const modules = fs.readdirSync(`./core/client/cmdModules/`)
     
@@ -87,12 +88,12 @@ module.exports = () => new Promise(async (res, rej) => {
                 errorHandler(e)
             }
         };
-    
-        const rest = new REST({}).setToken(require(`../../config.json`).token);
-    
-        rest.put(Routes.applicationCommands(require(`../../config.json`).botID), {
-            body: commands
-        }).then(data => {
+
+        const restClient = new Client({ auth: config.token, rest: true });
+
+        console.log(`Registering ${commands.length} command${commands.length == 1 ? `` : `s`}!`)
+
+        restClient.rest.applicationCommands.bulkEditGlobalCommands(config.botID, commands).then(data => {
             console.log(`Successfully updated data!`)
             console.debug(data[0])
             res({

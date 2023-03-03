@@ -8,26 +8,14 @@ module.exports = (interaction) => new Promise(async (res, rej) => {
     }
     
     try {
-        console.debug(interaction)
+        interaction = await ctx.utils.interactionParser(interaction);
 
-        const args = interaction.options._hoistedOptions
-        let locale = ctx.cmds[interaction.commandName].languages[interaction.locale];
+        let locale = ctx.cmds[interaction.data.name].languages[interaction.locale];
 
-        if(locale.missingValues) {
-            interaction.originalReply = interaction.reply;
-            interaction.reply = (...d) => {
-                if(typeof d[0] == `string`) {
-                    d[0] = `${ctx.emoji.nyx.translator} ${generalLocale.missingTranslation}\n\n` + d[0]
-                } else if(d[0].content) {
-                    d[0].content = `${ctx.emoji.nyx.translator} ${generalLocale.missingTranslation}\n\n` + d[0].content
-                }
+        interaction.reply = (...raw) => ctx.replyHandler({ interaction, content: raw, locale });
 
-                interaction.originalReply(...d)
-            }
-        }
-
-        if(interaction.type == `APPLICATION_COMMAND`) {
-            if(ctx.cmds[interaction.commandName]) ctx.cmds[interaction.commandName].func(interaction, args, locale)
+        if(interaction.type == 2) {
+            if(ctx.cmds[interaction.data.name]) ctx.cmds[interaction.data.name].func(interaction, interaction.args, locale)
         }
     } catch(e) {
         rej(e)

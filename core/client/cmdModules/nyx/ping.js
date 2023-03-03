@@ -2,7 +2,8 @@ module.exports = (msg, args, lang) => {
     const startTime = Date.now();
 
     msg.reply({
-        content: lang.pinging
+        content: lang.pinging,
+        flags: 64,
     }).then(m => m.edit({
         content: lang.complete,
         embeds: [

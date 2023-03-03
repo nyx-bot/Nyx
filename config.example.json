@@ -2,6 +2,7 @@
     "language": "en-US",
     "token": "DiscordTokenHere",
     "botID": "BotIDHere",
+    "verbose": false,
     "botListKeys": {
         "enableServerCountSubmission": false,
 

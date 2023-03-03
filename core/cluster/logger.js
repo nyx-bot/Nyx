@@ -1,4 +1,10 @@
-const debug = process.argv.find(a => a.toLowerCase() == `debug`) ? true : false
+let config = {};
+
+try {
+    config = require(`../../config.json`);
+} catch(e) {}
+
+const debug = (config && config.verbose ? true : false) || process.argv.find(a => a.toLowerCase() == `debug`) ? true : false
 
 const c = {
     reset: "\x1b[0m", bold: "\x1b[1m", italic: "\x1b[3m", underline: "\x1b[4m", strike: "\x1b[9m", clearline: "\x1b[K",

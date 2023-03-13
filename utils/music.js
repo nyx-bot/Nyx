@@ -1185,24 +1185,83 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
 
     ctx.music[msg.channel.guild.id].channel = await ctx.bot.getChannel(chnl);
     try {
-        ctx.music[msg.channel.guild.id].connection = await ctx.music[msg.channel.guild.id].channel.join({
-            channelID: ctx.music[msg.channel.guild.id].channel.id,
-            guildID: ctx.music[msg.channel.guild.id].channel.guild.id,
+        const adapterCreator = ctx.music[msg.channel.guild.id].channel.guild.voiceAdapterCreator;
+
+        const vcOpt = {
+            channelId: ctx.music[msg.channel.guild.id].channel.id,
+            guildId: ctx.music[msg.channel.guild.id].channel.guild.id,
+            debug: true,
             selfDeaf: false,
             selfMute: false,
-            voiceAdapterCreator: ctx.music[msg.channel.guild.id].channel.guild.voiceAdapterCreator
+            adapterCreator
+        }
+
+        //ctx.music[msg.channel.guild.id].connection = await ctx.bot.joinVoiceChannel(vcOpt);
+
+        ctx.music[msg.channel.guild.id].connection = require(`@discordjs/voice`).joinVoiceChannel(vcOpt);
+
+        await new Promise((res, rej) => {
+            console.d(`[CONNECTION] Connecting to voice channel...`);
+
+            ctx.music[msg.channel.guild.id].connection.once(`error`, e => {
+                console.error(e);
+                rej(e)
+            })
+
+            ctx.music[msg.channel.guild.id].connection.once(require(`@discordjs/voice`).VoiceConnectionStatus.Ready, () => {
+                console.d(`[CONNECTION] Connection has marked as ready!`);
+                res()
+            })
         })
-        ctx.core.trackEvents(ctx, ctx.music[msg.channel.guild.id].connection, `music channel connection: ${msg.channel.guild.id}`);
+
+        ctx.music[msg.channel.guild.id].connection.on(`debug`, (...d) => console.d(`[CONNECTION] Debug:`, ...d))        
+
+        //ctx.core.trackEvents(ctx, ctx.music[msg.channel.guild.id].connection, `music channel connection: ${msg.channel.guild.id}`);
         console.d(`CONNECTION CREATED ON ${msg.channel.guild.id}`);
 
         ctx.music[msg.channel.guild.id].connection.channel = ctx.music[msg.channel.guild.id].channel;
         console.d(`Added channel object to connection object`)
 
-        ctx.music[msg.channel.guild.id].player = require(`@discordjs/voice`).createAudioPlayer({ debug: true, });
+        ctx.music[msg.channel.guild.id].player = require(`@discordjs/voice`).createAudioPlayer({
+            debug: true
+        });
+
+        ctx.music[msg.channel.guild.id].connection.on(`error`, console.error)
+
+        ctx.music[msg.channel.guild.id].connection.on(require(`@discordjs/voice`).VoiceConnectionStatus.Disconnected, () => {
+            console.d(`[CONNECTION] DISCONNECTED FROM GUILD ${msg.channel.guild.id}`)
+        })
+
+        ctx.music[msg.channel.guild.id].connection.on(require(`@discordjs/voice`).VoiceConnectionStatus.Connecting, () => {
+            console.d(`[CONNECTION] CONNECTING IN GUILD ${msg.channel.guild.id}`)
+        })
+
+        ctx.music[msg.channel.guild.id].connection.on(require(`@discordjs/voice`).VoiceConnectionStatus.Ready, () => {
+            console.d(`[CONNECTION] READY IN GUILD ${msg.channel.guild.id}`)
+        })
+
         ctx.music[msg.channel.guild.id].connection.subscribe(ctx.music[msg.channel.guild.id].player);
         ctx.core.trackEvents(ctx, ctx.music[msg.channel.guild.id].player, `music channel player: ${msg.channel.guild.id}`);
-        console.d(`PLAYER CREATED ON ${msg.channel.guild.id} AND SUBSCRIBED.`)
+        console.d(`PLAYER CREATED ON ${msg.channel.guild.id} AND SUBSCRIBED.`);
+
+        ctx.music[msg.channel.guild.id].player.on(require(`@discordjs/voice`).AudioPlayerStatus.Playing, () => {
+            console.d(`[PLAYER] STARTED PLAYING IN GUILD ${msg.channel.guild.id}`)
+        })
+
+        ctx.music[msg.channel.guild.id].player.on(require(`@discordjs/voice`).AudioPlayerStatus.Paused, () => {
+            console.d(`[PLAYER] STOPPED PLAYING IN GUILD ${msg.channel.guild.id}`)
+        })
+
+        ctx.music[msg.channel.guild.id].player.on(require(`@discordjs/voice`).AudioPlayerStatus.Buffering, () => {
+            console.d(`[PLAYER] BUFFERING IN GUILD ${msg.channel.guild.id}`)
+        })
+
+        ctx.music[msg.channel.guild.id].player.on(require(`@discordjs/voice`).AudioPlayerStatus.AutoPaused, () => {
+            console.d(`[PLAYER] AUTOPAUSED PLAYING IN GUILD ${msg.channel.guild.id}`)
+            ctx.music[msg.channel.guild.id].connection.subscribe(ctx.music[msg.channel.guild.id].player);
+        })
     }catch(e){
+        console.error(e)
         delete ctx.music[msg.channel.guild.id];
         if(`${e}`.includes(`permission`)) {
             return rejectStart(`I don't have permission to join`)
@@ -1219,7 +1278,8 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
 
         if(ctx.music[msg.channel.guild.id].ffmpeg) try {
             ctx.music[msg.channel.guild.id].ffmpeg.stdin.destroy()
-            ctx.music[msg.channel.guild.id].ffmpeg.kill(`SIGINT`)
+            ctx.music[msg.channel.guild.id].ffmpeg.stdout.destroy()
+            ctx.music[msg.channel.guild.id].ffmpeg.kill(`SIGKILL`)
         } catch(e) {}
     
         if(!path && ctx.music[msg.channel.guild.id].queue[0][10]) {
@@ -1233,7 +1293,7 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
         if(!opt || opt.noTranscode) {
             if(!opt) opt = {};
 
-            ctx.music[msg.channel.guild.id].audioResource = require('@discordjs/voice').createAudioResource(ctx.music[msg.channel.guild.id].ffmpeg.stdout, {
+            ctx.music[msg.channel.guild.id].audioResource = require('@discordjs/voice').createAudioResource(path, {
                 inlineVolume: false,
                 inputType: require(`@discordjs/voice`).StreamType.Arbitrary
             });
@@ -1251,7 +1311,7 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
                 ffmpegArgs.unshift(`-headers`, `authorization: ${ctx.config.musicApi.key}`)
             }
     
-            ffmpegArgs.push(`-f`, `opus`);
+            ffmpegArgs.push(`-acodec`, `libopus`, `-f`, `opus`, `-ar`, `48000`, `-ac`, `2`);
     
             ffmpegArgs.push(`-b:a`, `${ctx.music[msg.channel.guild.id].connection.bitrate/1000}k` || `128k`)
     
@@ -1269,7 +1329,17 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
     
             console.d(`PLAY FUNC (${msg.channel.guild.id}): Spawning FFmpeg with args ${ffmpegArgs.map(s => s.includes(` `) ? `"${s}"` : s).join(` `)}`)
     
-            ctx.music[msg.channel.guild.id].ffmpeg = require('child_process').spawn(`ffmpeg`, [`-hide_banner`, ...ffmpegArgs]);
+            let ffmpegPath = `ffmpeg`;
+
+            try {
+                ffmpegPath = require('ffmpeg-static')
+            } catch(e) {
+                console.warn(`Unable to get FFmpeg-static binary! Attempting system.`)
+            }
+
+            console.d(`-----------------\nSpawning FFmpeg at ${ffmpegPath}\n-------------------`)
+
+            ctx.music[msg.channel.guild.id].ffmpeg = require('child_process').spawn(ffmpegPath, [`-hide_banner`, ...ffmpegArgs]);
             
             if(typeof path.pipe == `function`) path.pipe(ctx.music[msg.channel.guild.id].ffmpeg.stdin);
 
@@ -1282,40 +1352,51 @@ const start = async (ctx, msg, msg2, continueVoiceChannel) => new Promise(async 
                 if(log.includes(`size=`)) {
                     const size = Number(log.split(`size=`)[1].match(/\d+/)[0]), time = log.split(`time=`)[1].trim().split(/(\s+)/)[0]
                     console.d(`-- PROGRESS (${msg.channel.guild.id} / ${ctx.music[msg.channel.guild.id].queue[0] ? ctx.music[msg.channel.guild.id].queue[0][0] : `-- no data --`}):\n| Size: ${size}kB\n| Time: ${time}`);
-                    if(size > 0 && !sentBack) {
+                    /*if(size > 0 && !sentBack) {
                         sentBack = true;
                         res(true);
-                    }
+                    }*/
                 }
     
-                if(log.toLowerCase().includes(`invalid data found`)) {
+                if(log.toLowerCase().includes(`invalid data found`) || log.toLowerCase().includes(`conversion failed`)) {
                     ctx.music[msg.channel.guild.id].ffmpeg.kill(`SIGINT`);
                     rej(new Error(log))
-                }
-            })
-    
-            ctx.music[msg.channel.guild.id].audioResource = require('@discordjs/voice').createAudioResource(ctx.music[msg.channel.guild.id].ffmpeg.stdout, {
-                inlineVolume: opt && typeof opt.inlineVolume != `undefined` ? opt.inlineVolume : false,
-                inputType: require(`@discordjs/voice`).StreamType.Arbitrary
+                }else console.d(log)
             });
     
-            /*ctx.music[msg.channel.guild.id].ffmpeg.stdout.once(`data`, () => {
+            ctx.music[msg.channel.guild.id].audioResource = require('@discordjs/voice').createAudioResource(ctx.music[msg.channel.guild.id].ffmpeg.stdout, {
+                inlineVolume: opt && typeof opt.inlineVolume == `boolean` ? opt.inlineVolume : false,
+                inputType: require(`@discordjs/voice`).StreamType.OggOpus
+            });
+
+            ctx.music[msg.channel.guild.id].ffmpeg.stdout.once(`data`, () => {
+                console.d(`[FFMPEG] Data #1`)
                 ctx.music[msg.channel.guild.id].ffmpeg.stdout.once(`data`, () => {
+                    console.d(`[FFMPEG] Data #2`)
                     ctx.music[msg.channel.guild.id].ffmpeg.stdout.once(`data`, () => {
+                        console.d(`[FFMPEG] Data #3`)
                         // once three parts of data has been piped, resolve as successful. gives headroom for ffmpeg to error without resolving as "successful"
+
+                        console.d(ctx.music[msg.channel.guild.id].audioResource)
+                        
+                        try {                    
+                            ctx.music[msg.channel.guild.id].player.play(ctx.music[msg.channel.guild.id].audioResource)
+                        } catch(e) {
+                            console.error(e)
+                        }
+
                         res(true)
                     });
                 });
-            });*/
+            });
     
             ctx.music[msg.channel.guild.id].ffmpeg.on(`error`, e => {
+                console.error(e)
                 if(!sentBack) {
                     sentBack = true;
                     rej(e)
                 }
             })
-    
-            return ctx.music[msg.channel.guild.id].player.play(ctx.music[msg.channel.guild.id].audioResource)
         }
     });
     console.d(`HIJACKED THE PLAY FUNCTION`)

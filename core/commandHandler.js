@@ -41,6 +41,6 @@ module.exports = (ctx, msg, justReturn) => {
           } else core.runCommandThing(ctx, msg)
      } else {
           //console.d(`Message event fired, but not doing anything because I don't have permission to send messages in this channel!`);
-          throw new Error(``)
+          return null;
      }
 }

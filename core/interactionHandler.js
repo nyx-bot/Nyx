@@ -40,10 +40,11 @@ module.exports = async (ctx, interaction) => {
      if(interaction.data.options && typeof interaction.data.options == `object` && interaction.data.options.raw && typeof interaction.data.options.raw.length == `number`) for(opt of interaction.data.options.raw) {
           if(opt.value !== undefined) {
                if(opt.type == 11) {
-                    console.d(interaction.data.resolved.attachments)
-                    if(interaction.data.resolved && interaction.data.resolved.attachments && interaction.data.resolved.attachments[opt.value]) {
+                    //console.d(interaction.data.resolved.attachments)
+                    console.d(require('util').inspect(interaction.data.resolved, false, 4))
+                    if(interaction.data.resolved && interaction.data.resolved.attachments && interaction.data.resolved.attachments.has(opt.value)) {
                          console.d(`data for resolved attachments exist!`)
-                         attachments.push(interaction.data.resolved.attachments[opt.value])
+                         attachments.push(interaction.data.options.resolved.attachments.get(opt.value))
                     } else attachments.push(opt)
                } else if(opt.type == 6) {
                     interaction.mentions.members.push(interaction.channel.guild.members.find(m => m.id == opt.value) || (await interaction.channel.guild.fetchMembers({userIDs: [opt.value]})))

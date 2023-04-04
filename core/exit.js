@@ -27,43 +27,50 @@ module.exports = async (ctx, message) => {
           })
           for(i in queues) {
                const id = queues[i][0]
-               if(ctx.music[id].queue && ctx.music[id].queue.length > 0) {
-                    console.l(`┃ Pausing voice channel ${id}...`, ctx.music[id.queue]);
 
-                    let obj = {
-                         voiceChannel: ctx.music[id].channel.id,
-                         guild: ctx.music[id].channel.guild.id,
-                         queue: ctx.music[id].queue,
-                         paused: ctx.music[id].paused
-                    };
+               console.l(`┃ Pausing voice channel ${id}...`, ctx.music[id.queue]);
+
+               try {
+                    if(ctx.music[id].queue && ctx.music[id].queue.length > 0) {     
+                         let obj = {
+                              voiceChannel: ctx.music[id].channel.id,
+                              guild: ctx.music[id].channel.guild.id,
+                              queue: ctx.music[id].queue,
+                              paused: ctx.music[id].paused
+                         };
+          
+                         const msg = await ctx.music[id].end(`I need to pause the playback because I just got an update! I will resume your queue automatically when I'm ready again!`, null, true)
      
-                    const msg = await ctx.music[id].end(`I need to pause the playback because I just got an update! I will resume your queue automatically when I'm ready again!`, null, true)
-
-                    obj.message = msg.id;
-                    obj.channel = msg.channel.id
-                    
-                    left++
+                         obj.message = msg.id;
+                         obj.channel = msg.channel.id
+                         
+                         left++
+          
+                         console.d(`msgid: ${obj.message}`)
      
-                    console.d(`msgid: ${obj.message}`)
-
-                    if(!fs.existsSync(`./etc/musicSessions/`)) {
-                         fs.mkdirSync(`./etc/musicSessions`);
-                         console.log(`created musicSessions dir!`)
-                    };
-
-                    console.d(obj)
-
-                    fs.writeFileSync(`./etc/musicSessions/${obj.guild}.json`, JSON.stringify(obj, null, 4));
-
-                    console.d(`successfuly wrote file!`);
-               } else {
-                    console.l(`┃ Leaving voice channel ${id}...`, ctx.music[id.queue]);
-
-                    if(ctx.music[id].end) await ctx.music[id].end(`I need to disconnect for a restart! The queue was empty, so I'm just going to leave the voice channel.\n\nYou can always start a new queue using the \`play\` command!`)
+                         if(!fs.existsSync(`./etc/musicSessions/`)) {
+                              fs.mkdirSync(`./etc/musicSessions`);
+                              console.log(`created musicSessions dir!`)
+                         };
+     
+                         console.d(obj)
+     
+                         fs.writeFileSync(`./etc/musicSessions/${obj.guild}.json`, JSON.stringify(obj, null, 4));
+     
+                         console.d(`successfuly wrote file!`);
+                    } else {
+                         console.l(`┃ Leaving voice channel ${id}...`, ctx.music[id.queue]);
+     
+                         if(ctx.music[id].end) await ctx.music[id].end(`I need to disconnect for a restart! The queue was empty, so I'm just going to leave the voice channel.\n\nYou can always start a new queue using the \`play\` command!`)
+                    }
+     
+                    e.emit(`updated`);
+                    await ctx.timeout(1000);
+               } catch(e) {
+                    console.error(`┃ Failed closing voice channel ${id} -- ${e}`)
+                    e.emit(`updated`);
+                    await ctx.timeout(1000);
                }
-
-               e.emit(`updated`);
-               await ctx.timeout(1000);
           }
      } else {
           return process.exit(0)

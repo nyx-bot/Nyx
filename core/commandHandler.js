@@ -1,6 +1,4 @@
 module.exports = (ctx, msg, justReturn) => {
-     console.log(msg)
-
      const isInteraction = msg.interaction ? true : false
      const hasPermissionToSendMsg = msg && msg.channel && msg.channel.permissionsOf && msg.channel.permissionsOf(ctx.bot.user.id).has(`SEND_MESSAGES`) ? true : false
 

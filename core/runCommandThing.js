@@ -152,7 +152,7 @@ module.exports = async (ctx, msg, isInteraction) => {
                               const getTimeMax = async (ctx, id) => {
                                   const usr = await ctx.utils.lookupUser(ctx, id);
                                                        // 5 hrs    2 hrs
-                                  return (usr.supporter ? 1.8e+7 : 7.2e+6)
+                                  return (usr.supporter ? 4.32e+7 : 7.2e+6)
                               };
                               msg.author.maxtime = await getTimeMax(ctx, msg.author.id)
                               msg.args = args;

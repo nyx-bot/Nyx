@@ -38,7 +38,15 @@ module.exports = async function (ctx) {
                               name: `${name} Logs`,
                               icon: require('../res/webhookUrls.json')[`logging${file.replace(".js", "")}`]
                          }
-                         ctx.bot.on(e.event, async (...args) => {return e.func(...args, ctx, file.replace(".js", ""), obj)});
+                         if(e.funcs && typeof e.funcs == `object`) {
+                              e.funcs.forEach((func, i) => {
+                                   console.log(`added ${e.event} function #${i+1}`)
+                                   ctx.bot.on(e.event, async (...args) => {return func(...args, ctx, file.replace(".js", ""), obj)});
+                              })
+                         } else {
+                              console.log(`added ${e.event} function`)
+                              ctx.bot.on(e.event, async (...args) => {return e.func(...args, ctx, file.replace(".js", ""), obj)});
+                         }
                     }
                }
           };
@@ -48,7 +56,7 @@ module.exports = async function (ctx) {
           var files = fs.readdirSync(dirname + "/events");
           for (let f of files) {
                let e = require(dirname + "/events/" + f);
-               if(e.event && e.func) {
+               if(e.event && (e.func || e.funcs)) {
                     e.type = f.replace(".js", "");
                     ctx.events.set(e.event, e);
                     createEvent(e, f);
@@ -56,7 +64,7 @@ module.exports = async function (ctx) {
                     for (let i = 0; i < e.length; i++) {
                          let a = e[i];
                          a.type = f.replace(".js", "");
-                         if(a.event && a.func) {
+                         if(a.event && (a.func || a.funcs)) {
                               ctx.events.set(a.event, a);
                               createEvent(a, f);
                          }

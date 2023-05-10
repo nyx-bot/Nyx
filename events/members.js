@@ -1,7 +1,8 @@
 // everything includes event stuff, ctx, and meta.
 async function check(ctx, guild, meta) { const g = await ctx.utils.lookupGuild(ctx, guild); if(g && g.logging === true && g.loggingchannelID !== null && g[`logging${meta}`] !== false && g.loggingchannelWebhook !== `{}`) {return g} else {return false} }
 
-autorole = async function(guild, member, ctx) {
+autorole = async function(member, ctx, meta, mObj) {
+    let guild = member.guild;
     try {
         if(!member.username) try { member = await ctx.utils.resolveUser(member.id) } catch(e) {}
         const guildSetting = await ctx.utils.lookupGuild(ctx, guild.id, true);
@@ -26,7 +27,8 @@ autorole = async function(guild, member, ctx) {
     } catch(e) {}
 };
 
-remuteMembers = async function(guild, member, ctx) {
+remuteMembers = async function(member, ctx, meta, mObj) {
+    let guild = member.guild;
     try {
         const mute = await ctx.seq.models.Mutes.findOne({where: {guildId: guild.id, userId: member.id}, raw: true,});
         if(mute) {
@@ -50,8 +52,8 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                 if(ctx.cache.joinLeave[guild.id][0] === 0 && ctx.cache.joinLeave[guild.id][1] === 0) {delete ctx.cache.joinLeave[guild.id]}
             }
         }, 3.6e+6)
-        autorole(guild, member, ctx);
-        remuteMembers(guild, member, ctx);
+        //autorole(guild, member, ctx);
+        //remuteMembers(guild, member, ctx);
         const g = await check(ctx, guild.id, meta)
         const guildSetting = await ctx.utils.lookupGuild(ctx, guild.id, true)
         console.d(`g:`, g, `guildSetting:`, guildSetting)
@@ -395,7 +397,7 @@ module.exports = [
     {
         event: "guildMemberAdd",
         name: "Member Joining",
-        func: guildMemberAdd
+        funcs: [guildMemberAdd, autorole, remuteMembers]
     },
     {
         event: "guildMemberRemove",

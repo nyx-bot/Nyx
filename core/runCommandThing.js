@@ -9,7 +9,7 @@ module.exports = async (ctx, msg, isInteraction) => {
                     str.push(a.url);
                     if(str.length !== 0) {attachments.push(str.join(' '))}
                })
-               console.l(`[DM] ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}): ${msg.content}${attachments.length !== 0 ? `\n| ${attachments.join('\n| ')}` : ``}`)
+               console.l(`[DM] ${msg.author.username} (${msg.author.id}): ${msg.content}${attachments.length !== 0 ? `\n| ${attachments.join('\n| ')}` : ``}`)
           } else if(msg.author && msg.channel && msg.channel.guild && !ctx.ignoreAllMessages) {
                msg.channel.guild.me = msg.channel.guild.members.get(ctx.bot.user.id)
                let hasRan = false;
@@ -108,7 +108,7 @@ module.exports = async (ctx, msg, isInteraction) => {
                          const disabled = await ctx.utils.disabledCmds.status(ctx, msg.channel.guild.id, c.name);
                          console.l(
                               `${disabled ? `[X] ` : ``}${msg.channel.guild.name} (${msg.channel.guild.id}): ${
-                                   msg.author.username + "#" + msg.author.discriminator
+                                   msg.author.username
                               } (${msg.author.id}):${msg.attachments.size !== 0 ? ` [${msg.attachments.size} attachment${msg.attachments.size === 1 ? `` : `s`}]` : ``} ${cmd} ${args.join(' ')}`
                          );
                          if(disabled === false) {

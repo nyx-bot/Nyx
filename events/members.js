@@ -69,7 +69,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                     console.d(`Falling back to standard welcome messages`)
                     if(msgs.length !== 0) try {
                         await channel.createMessage({
-                            content: msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}#${member.discriminator}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`),
+                            content: msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`),
                             allowedMentions: {
                                 users: true,
                             }
@@ -90,7 +90,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                                 }
 
                                 let payload = {
-                                    name: `${member.username}#${member.discriminator}`,
+                                    name: `${member.username}`,
                                     url: member.avatarURL().split(`size=`)[0] + `size=256`,
                                     message: guildSetting.welcomeImgMsg.length > 0 ? guildSetting.welcomeImgMsg : null,
                                     image: true
@@ -115,7 +115,7 @@ guildMemberAdd = async function(member, ctx, meta, mObj) {
                                         }
                                     };
 
-                                    if(msgs.length > 0) content.content = msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}#${member.discriminator}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`);
+                                    if(msgs.length > 0) content.content = msgs[Math.floor((Math.random() * msgs.length))].replace(/{@member}/g, member.mention).replace(/{member}/g, `${member.username}`).replace(/{server}/g, `${guild.name}`).replace(/{membercount}/g, `${guild.members.size}`);
 
                                     content.files = [
                                         {
